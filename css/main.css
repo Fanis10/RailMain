@@ -1,7 +1,25 @@
+.timeline__btn-wrap {
+    display: flex;
+    justify-content: center;
+    margin: 30px 15px 0;
+}
+.timeline__btn {
+    height: 53px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: transparent;
+    border: 1.5px solid #013787;
+    border-radius: 89px;
+    padding: 5px 40px;
+    font-size: 16px;
+    line-height: 120%;
+    color: #013787;
+}
 .connection {
     padding: 180px 0;
 }
-.connection__form-wrap {
+.connection .connection__form-wrap {
     max-width: 575px;
     margin: 0 auto;
     border: 3px solid #013787;
@@ -28,7 +46,7 @@
     width: 100%;
     height: 60px;
     background: transparent;
-    border: 1.5px solid #D9D9D9;
+    border: 1.5px solid #013787;
     border-radius: 38px;
     padding: 0 30px 0 56px;
     font-size: 16px;
@@ -85,13 +103,77 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    background: transparent;
     border: 1.5px solid #013787;
     border-radius: 89px;
     padding: 5px 40px;
     font-size: 16px;
     line-height: 120%;
+    color: #013787;
 }
-
+.modal {
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    background: rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    pointer-events: none;
+    overflow-y: auto;
+}
+.modal--active {
+    opacity: 1;
+    pointer-events: unset;
+}
+@media screen and (min-width: 993px) {
+    .modal::before {
+         display: inline-block;
+         vertical-align: middle;
+         content: " ";
+         height: 100%;
+     }
+    .modal__dialog {
+        display: inline-block;
+        text-align: left;
+        vertical-align: middle;
+    }
+}
+.modal__dialog {
+    position: relative;
+    width: 575px;
+    max-width: 100%;
+    height: max-content;
+    background: #fff;
+    border-radius: 15px;
+    padding: 48px 58px;
+    margin: auto;
+}
+@media screen and (max-width: 992px) {
+    .modal__dialog {
+        margin: 50px auto 0;
+        max-width: calc(100% - 30px);
+    }
+}
+.modal__close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: transparent;
+    padding: 0;
+    width: 24px;
+}
+.modal__close img {
+    width: 100%;
+    height: auto;
+}
+.modal .connection__form-wrap {
+    width: 100%;
+    max-width: 100%;
+    padding: 0;
+}
 
 
 @media screen and (max-width: 767px) {
@@ -101,5 +183,10 @@
     .connection__form-wrap {
         max-width: 400px;
         padding: 32px 24px;
+    }
+    .modal__dialog {
+        width: calc(100% - 30px);
+        max-width: 400px;
+        padding: 48px 24px 32px 24px;
     }
 }
