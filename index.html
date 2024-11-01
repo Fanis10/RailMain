@@ -1,0 +1,2360 @@
+<!DOCTYPE html><html lang=""><head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <style>
+                @charset "UTF-8";
+            
+                .mapboxgl-map {
+                    font: 12px/20px Helvetica Neue, Arial, Helvetica, sans-serif;
+                    overflow: hidden;
+                    position: relative;
+                    -webkit-tap-highlight-color: rgba(0, 0, 0, 0)
+                }
+            
+                .mapboxgl-map:-webkit-full-screen {
+                    width: 100%;
+                    height: 100%
+                }
+            
+                .mapboxgl-canary {
+                    background-color: salmon
+                }
+            
+                .mapboxgl-canvas-container.mapboxgl-interactive,
+                .mapboxgl-ctrl-group>button.mapboxgl-ctrl-compass {
+                    cursor: -webkit-grab;
+                    cursor: grab;
+                    -moz-user-select: none;
+                    -webkit-user-select: none;
+                    -ms-user-select: none;
+                    user-select: none
+                }
+            
+                .mapboxgl-canvas-container.mapboxgl-interactive:active,
+                .mapboxgl-ctrl-group>button.mapboxgl-ctrl-compass:active {
+                    cursor: -webkit-grabbing;
+                    cursor: grabbing
+                }
+            
+                .mapboxgl-canvas-container.mapboxgl-touch-zoom-rotate,
+                .mapboxgl-canvas-container.mapboxgl-touch-zoom-rotate .mapboxgl-canvas {
+                    -ms-touch-action: pan-x pan-y;
+                    touch-action: pan-x pan-y
+                }
+            
+                .mapboxgl-canvas-container.mapboxgl-touch-drag-pan,
+                .mapboxgl-canvas-container.mapboxgl-touch-drag-pan .mapboxgl-canvas {
+                    -ms-touch-action: pinch-zoom;
+                    touch-action: pinch-zoom
+                }
+            
+                .mapboxgl-canvas-container.mapboxgl-touch-zoom-rotate.mapboxgl-touch-drag-pan,
+                .mapboxgl-canvas-container.mapboxgl-touch-zoom-rotate.mapboxgl-touch-drag-pan .mapboxgl-canvas {
+                    -ms-touch-action: none;
+                    touch-action: none
+                }
+            
+                .mapboxgl-ctrl-bottom-left,
+                .mapboxgl-ctrl-bottom-right,
+                .mapboxgl-ctrl-top-left,
+                .mapboxgl-ctrl-top-right {
+                    position: absolute;
+                    pointer-events: none;
+                    z-index: 2
+                }
+            
+                .mapboxgl-ctrl-top-left {
+                    top: 0;
+                    left: 0
+                }
+            
+                .mapboxgl-ctrl-top-right {
+                    top: 0;
+                    right: 0
+                }
+            
+                .mapboxgl-ctrl-bottom-left {
+                    bottom: 0;
+                    left: 0
+                }
+            
+                .mapboxgl-ctrl-bottom-right {
+                    right: 0;
+                    bottom: 0
+                }
+            
+                .mapboxgl-ctrl {
+                    clear: both;
+                    pointer-events: auto
+                }
+            
+                .mapboxgl-ctrl-top-left .mapboxgl-ctrl {
+                    margin: 10px 0 0 10px;
+                    float: left
+                }
+            
+                .mapboxgl-ctrl-top-right .mapboxgl-ctrl {
+                    margin: 10px 10px 0 0;
+                    float: right
+                }
+            
+                .mapboxgl-ctrl-bottom-left .mapboxgl-ctrl {
+                    margin: 0 0 10px 10px;
+                    float: left
+                }
+            
+                .mapboxgl-ctrl-bottom-right .mapboxgl-ctrl {
+                    margin: 0 10px 10px 0;
+                    float: right
+                }
+            
+                .mapboxgl-ctrl-group {
+                    border-radius: 4px;
+                    overflow: hidden;
+                    background: #fff
+                }
+            
+                .mapboxgl-ctrl-group:not(:empty) {
+                    -webkit-box-shadow: 0 0 2px rgba(0, 0, 0, .1);
+                    box-shadow: 0 0 0 2px rgba(0, 0, 0, .1)
+                }
+            
+                .mapboxgl-ctrl-group>button {
+                    width: 30px;
+                    height: 30px;
+                    display: block;
+                    padding: 0;
+                    outline: none;
+                    border: 0;
+                    -webkit-box-sizing: border-box;
+                    box-sizing: border-box;
+                    background-color: rgba(0, 0, 0, 0);
+                    cursor: pointer
+                }
+            
+                .mapboxgl-ctrl-group>button+button {
+                    border-top: 1px solid #ddd
+                }
+            
+                .mapboxgl-ctrl>button::-moz-focus-inner {
+                    border: 0;
+                    padding: 0
+                }
+            
+                .mapboxgl-ctrl>button:hover {
+                    background-color: rgba(0, 0, 0, .05)
+                }
+            
+                .mapboxgl-ctrl-icon,
+                .mapboxgl-ctrl-icon>.mapboxgl-ctrl-compass-arrow {
+                    speak: none;
+                    -webkit-font-smoothing: antialiased;
+                    -moz-osx-font-smoothing: grayscale
+                }
+            
+                .mapboxgl-ctrl-icon {
+                    padding: 5px
+                }
+            
+                .mapboxgl-ctrl-icon.mapboxgl-ctrl-zoom-out {
+                    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 9c-.554 0-1 .446-1 1s.446 1 1 1h6c.554 0 1-.446 1-1s-.446-1-1-1z' fill='%23333'/%3E%3C/svg%3E")
+                }
+            
+                .mapboxgl-ctrl-icon.mapboxgl-ctrl-zoom-in {
+                    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M10 6c-.554 0-1 .446-1 1v2H7c-.554 0-1 .446-1 1s.446 1 1 1h2v2c0 .554.446 1 1 1s1-.446 1-1v-2h2c.554 0 1-.446 1-1s-.446-1-1-1h-2V7c0-.554-.446-1-1-1z' fill='%23333'/%3E%3C/svg%3E")
+                }
+            
+                .mapboxgl-ctrl-icon.mapboxgl-ctrl-geolocate {
+                    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg' fill='%23333'%3E%3Cpath d='M10 4C9 4 9 5 9 5v.1A5 5 0 0 0 5.1 9H5s-1 0-1 1 1 1 1 1h.1A5 5 0 0 0 9 14.9v.1s0 1 1 1 1-1 1-1v-.1a5 5 0 0 0 3.9-3.9h.1s1 0 1-1-1-1-1-1h-.1A5 5 0 0 0 11 5.1V5s0-1-1-1zm0 2.5a3.5 3.5 0 0 1 3.5 3.5 3.5 3.5 0 0 1-3.5 3.5A3.5 3.5 0 0 1 6.5 10 3.5 3.5 0 0 1 10 6.5zm0 1.8A1.8 1.8 0 0 0 8.3 10a1.8 1.8 0 0 0 1.7 1.8 1.8 1.8 0 0 0 1.8-1.8A1.8 1.8 0 0 0 10 8.3z'/%3E%3C/svg%3E")
+                }
+            
+                .mapboxgl-ctrl-icon.mapboxgl-ctrl-geolocate:disabled {
+                    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg' fill='%23aaa'%3E%3Cpath d='M10 4C9 4 9 5 9 5v.1A5 5 0 0 0 5.1 9H5s-1 0-1 1 1 1 1 1h.1A5 5 0 0 0 9 14.9v.1s0 1 1 1 1-1 1-1v-.1a5 5 0 0 0 3.9-3.9h.1s1 0 1-1-1-1-1-1h-.1A5 5 0 0 0 11 5.1V5s0-1-1-1zm0 2.5a3.5 3.5 0 0 1 3.5 3.5 3.5 3.5 0 0 1-3.5 3.5A3.5 3.5 0 0 1 6.5 10 3.5 3.5 0 0 1 10 6.5zm0 1.8A1.8 1.8 0 0 0 8.3 10a1.8 1.8 0 0 0 1.7 1.8 1.8 1.8 0 0 0 1.8-1.8A1.8 1.8 0 0 0 10 8.3z'/%3E%3C/svg%3E")
+                }
+            
+                .mapboxgl-ctrl-icon.mapboxgl-ctrl-geolocate.mapboxgl-ctrl-geolocate-active {
+                    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg' fill='%2333b5e5'%3E%3Cpath d='M10 4C9 4 9 5 9 5v.1A5 5 0 0 0 5.1 9H5s-1 0-1 1 1 1 1 1h.1A5 5 0 0 0 9 14.9v.1s0 1 1 1 1-1 1-1v-.1a5 5 0 0 0 3.9-3.9h.1s1 0 1-1-1-1-1-1h-.1A5 5 0 0 0 11 5.1V5s0-1-1-1zm0 2.5a3.5 3.5 0 0 1 3.5 3.5 3.5 3.5 0 0 1-3.5 3.5A3.5 3.5 0 0 1 6.5 10 3.5 3.5 0 0 1 10 6.5zm0 1.8A1.8 1.8 0 0 0 8.3 10a1.8 1.8 0 0 0 1.7 1.8 1.8 1.8 0 0 0 1.8-1.8A1.8 1.8 0 0 0 10 8.3z'/%3E%3C/svg%3E")
+                }
+            
+                .mapboxgl-ctrl-icon.mapboxgl-ctrl-geolocate.mapboxgl-ctrl-geolocate-active-error {
+                    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg' fill='%23e58978'%3E%3Cpath d='M10 4C9 4 9 5 9 5v.1A5 5 0 0 0 5.1 9H5s-1 0-1 1 1 1 1 1h.1A5 5 0 0 0 9 14.9v.1s0 1 1 1 1-1 1-1v-.1a5 5 0 0 0 3.9-3.9h.1s1 0 1-1-1-1-1-1h-.1A5 5 0 0 0 11 5.1V5s0-1-1-1zm0 2.5a3.5 3.5 0 0 1 3.5 3.5 3.5 3.5 0 0 1-3.5 3.5A3.5 3.5 0 0 1 6.5 10 3.5 3.5 0 0 1 10 6.5zm0 1.8A1.8 1.8 0 0 0 8.3 10a1.8 1.8 0 0 0 1.7 1.8 1.8 1.8 0 0 0 1.8-1.8A1.8 1.8 0 0 0 10 8.3z'/%3E%3C/svg%3E")
+                }
+            
+                .mapboxgl-ctrl-icon.mapboxgl-ctrl-geolocate.mapboxgl-ctrl-geolocate-background {
+                    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg' fill='%2333b5e5'%3E%3Cpath d='M10 4C9 4 9 5 9 5v.1A5 5 0 0 0 5.1 9H5s-1 0-1 1 1 1 1 1h.1A5 5 0 0 0 9 14.9v.1s0 1 1 1 1-1 1-1v-.1a5 5 0 0 0 3.9-3.9h.1s1 0 1-1-1-1-1-1h-.1A5 5 0 0 0 11 5.1V5s0-1-1-1zm0 2.5a3.5 3.5 0 1 1 0 7 3.5 3.5 0 0 1 0-7z'/%3E%3C/svg%3E")
+                }
+            
+                .mapboxgl-ctrl-icon.mapboxgl-ctrl-geolocate.mapboxgl-ctrl-geolocate-background-error {
+                    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg' fill='%23e54e33'%3E%3Cpath d='M10 4C9 4 9 5 9 5v.1A5 5 0 0 0 5.1 9H5s-1 0-1 1 1 1 1 1h.1A5 5 0 0 0 9 14.9v.1s0 1 1 1 1-1 1-1v-.1a5 5 0 0 0 3.9-3.9h.1s1 0 1-1-1-1-1-1h-.1A5 5 0 0 0 11 5.1V5s0-1-1-1zm0 2.5a3.5 3.5 0 1 1 0 7 3.5 3.5 0 0 1 0-7z'/%3E%3C/svg%3E")
+                }
+            
+                .mapboxgl-ctrl-icon.mapboxgl-ctrl-geolocate.mapboxgl-ctrl-geolocate-waiting {
+                    -webkit-animation: mapboxgl-spin 2s linear infinite;
+                    animation: mapboxgl-spin 2s linear infinite
+                }
+            
+                @-webkit-keyframes mapboxgl-spin {
+                    0% {
+                        -webkit-transform: rotate(0deg)
+                    }
+            
+                    to {
+                        -webkit-transform: rotate(1turn)
+                    }
+                }
+            
+                @keyframes mapboxgl-spin {
+                    0% {
+                        -webkit-transform: rotate(0deg);
+                        transform: rotate(0deg)
+                    }
+            
+                    to {
+                        -webkit-transform: rotate(1turn);
+                        transform: rotate(1turn)
+                    }
+                }
+            
+                .mapboxgl-ctrl-icon.mapboxgl-ctrl-fullscreen {
+                    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5 4c-.5 0-1 .5-1 1v4h.5l1.277-1.703c1 .763 2.059 1.66 3.114 2.703a30.38 30.38 0 0 1-3.11 2.707L4.5 11H4v4c0 .5.5 1 1 1h4v-.5l-1.727-1.295a35.498 35.498 0 0 1 2.688-3.137 30.312 30.312 0 0 1 2.746 3.15L11 15.5v.5h4c.5 0 1-.5 1-1v-4h-.5l-1.295 1.727a35.513 35.513 0 0 1-3.168-2.717 47.787 47.787 0 0 1 3.192-2.705L15.5 9h.5V5c0-.5-.5-1-1-1h-4v.5l1.703 1.277A32.243 32.243 0 0 1 9.971 8.92 47.761 47.761 0 0 1 7.305 5.77L9 4.5V4H5z'/%3E%3C/svg%3E")
+                }
+            
+                .mapboxgl-ctrl-icon.mapboxgl-ctrl-shrink {
+                    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4.242 3.492a.75.75 0 0 0-.523 1.29l2.246 2.245L4 8.5V9h4c.5 0 1-.5 1-1V4h-.5L7.018 5.955 4.78 3.72a.75.75 0 0 0-.539-.227zm11.492 0a.75.75 0 0 0-.515.227l-2.235 2.234L11.5 4H11v4c0 .5.5 1 1 1h4v-.5l-1.965-1.473 2.246-2.246a.75.75 0 0 0-.547-1.289zM4 11v.5l1.965 1.473-2.246 2.246A.751.751 0 1 0 4.78 16.28l2.246-2.246L8.5 16H9v-4c0-.5-.5-1-1-1H4zm8 0c-.5 0-1 .5-1 1v4h.5l1.473-1.965 2.246 2.246a.751.751 0 1 0 1.062-1.062l-2.246-2.246L16 11.5V11h-4z'/%3E%3C/svg%3E")
+                }
+            
+                .mapboxgl-ctrl-icon.mapboxgl-ctrl-compass>.mapboxgl-ctrl-compass-arrow {
+                    width: 20px;
+                    height: 20px;
+                    margin: 5px;
+                    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='%23333' d='M6 9l4-8 4 8z'/%3E%3Cpath fill='%23CCC' d='M6 11l4 8 4-8z'/%3E%3C/svg%3E");
+                    background-repeat: no-repeat;
+                    display: inline-block
+                }
+            
+                a.mapboxgl-ctrl-logo {
+                    width: 85px;
+                    height: 21px;
+                    margin: 0 0 -3px -3px;
+                    display: block;
+                    background-repeat: no-repeat;
+                    cursor: pointer;
+                    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 84.49 21'%3E%3Cpath class='st0' d='M83.25 14.26c0 .12-.09.21-.21.21h-1.61c-.13 0-.24-.06-.3-.17l-1.44-2.39-1.44 2.39a.34.34 0 0 1-.3.17h-1.61c-.04 0-.08-.01-.12-.03-.09-.06-.13-.19-.06-.28l2.43-3.68-2.39-3.64a.213.213 0 0 1-.03-.12c0-.12.09-.21.21-.21h1.61c.13 0 .24.06.3.17l1.41 2.36 1.4-2.35a.34.34 0 0 1 .3-.17H83c.04 0 .08.01.12.03.09.06.13.19.06.28l-2.37 3.63 2.43 3.67c0 .05.01.09.01.13zM66.24 9.59c-.39-1.88-1.96-3.28-3.84-3.28-1.03 0-2.03.42-2.73 1.18V3.51c0-.13-.1-.23-.23-.23h-1.4c-.13 0-.23.11-.23.23v10.72c0 .13.1.23.23.23h1.4c.13 0 .23-.11.23-.23v-.73c.71.75 1.7 1.18 2.73 1.18 1.88 0 3.45-1.41 3.84-3.29.13-.6.13-1.21 0-1.8zM62.08 13c-1.32 0-2.39-1.11-2.41-2.48v-.06c.02-1.38 1.09-2.48 2.41-2.48s2.42 1.12 2.42 2.51S63.41 13 62.08 13zM71.67 6.32a4.24 4.24 0 0 0-4.16 3.29c-.13.59-.13 1.19 0 1.77a4.233 4.233 0 0 0 4.17 3.3c2.35 0 4.26-1.87 4.26-4.19s-1.9-4.17-4.27-4.17zm-.02 6.69c-1.33 0-2.42-1.12-2.42-2.51s1.08-2.52 2.42-2.52c1.33 0 2.42 1.12 2.42 2.51s-1.08 2.51-2.42 2.52z' opacity='.9' fill='%23fff'/%3E%3Cpath class='st1' d='M62.08 7.98c-1.32 0-2.39 1.11-2.41 2.48v.06c.01 1.38 1.08 2.48 2.41 2.48s2.42-1.12 2.42-2.51-1.09-2.51-2.42-2.51zm0 3.78c-.63 0-1.14-.56-1.17-1.25v-.04c.01-.69.54-1.25 1.17-1.25.63 0 1.17.57 1.17 1.27-.01.71-.52 1.27-1.17 1.27zM71.65 7.98c-1.33 0-2.42 1.12-2.42 2.51S70.32 13 71.65 13s2.42-1.12 2.42-2.51-1.08-2.51-2.42-2.51zm0 3.78c-.64 0-1.17-.57-1.17-1.27 0-.7.53-1.26 1.17-1.26s1.17.57 1.17 1.27c0 .71-.53 1.26-1.17 1.26z' opacity='.35'/%3E%3Cpath class='st0' d='M45.74 6.53h-1.4c-.13 0-.23.11-.23.23v.73c-.71-.75-1.7-1.18-2.73-1.18-2.17 0-3.94 1.87-3.94 4.19s1.77 4.19 3.94 4.19c1.04 0 2.03-.43 2.73-1.19v.73c0 .13.1.23.23.23h1.4c.13 0 .23-.11.23-.23V6.74c0-.12-.09-.22-.22-.22 0 .01 0 .01-.01.01zm-1.62 4C44.11 11.9 43.03 13 41.71 13s-2.42-1.12-2.42-2.51 1.08-2.52 2.4-2.52c1.33 0 2.39 1.11 2.41 2.48l.02.08z' opacity='.9' fill='%23fff'/%3E%3Cpath class='st1' d='M41.71 7.98c-1.33 0-2.42 1.12-2.42 2.51S40.37 13 41.71 13s2.39-1.11 2.41-2.48v-.06c-.02-1.37-1.09-2.48-2.41-2.48zm-1.16 2.51c0-.7.52-1.27 1.17-1.27.64 0 1.14.56 1.17 1.25v.04c-.01.68-.53 1.24-1.17 1.24-.64 0-1.17-.56-1.17-1.26z' opacity='.35'/%3E%3Cpath class='st0' d='M52.41 6.32c-1.03 0-2.03.42-2.73 1.18v-.75c0-.13-.1-.23-.23-.23h-1.4c-.13 0-.23.11-.23.23v10.72c0 .13.1.23.23.23h1.4c.13 0 .23-.1.23-.23V13.5c.71.75 1.7 1.18 2.74 1.18 2.17 0 3.94-1.87 3.94-4.19s-1.78-4.17-3.95-4.17zm-.33 6.69c-1.32 0-2.39-1.11-2.42-2.48v-.07c.02-1.38 1.09-2.49 2.4-2.49 1.32 0 2.41 1.12 2.41 2.51S53.4 13 52.08 13.01z' opacity='.9' fill='%23fff'/%3E%3Cpath class='st1' d='M52.08 7.98c-1.32 0-2.39 1.11-2.42 2.48v.06c.03 1.38 1.1 2.48 2.42 2.48s2.41-1.12 2.41-2.51-1.09-2.51-2.41-2.51zm0 3.78c-.63 0-1.14-.56-1.17-1.25v-.04c.01-.69.54-1.25 1.17-1.25.63 0 1.17.58 1.17 1.27s-.53 1.27-1.17 1.27z' opacity='.35'/%3E%3Cpath class='st0' d='M36.08 14.24c0 .13-.1.23-.23.23h-1.41c-.13 0-.23-.11-.23-.23V9.68c0-.98-.74-1.71-1.62-1.71-.8 0-1.46.7-1.59 1.62l.01 4.66c0 .13-.11.23-.23.23h-1.41c-.13 0-.23-.11-.23-.23V9.68c0-.98-.74-1.71-1.62-1.71-.85 0-1.54.79-1.6 1.8v4.48c0 .13-.1.23-.23.23h-1.4c-.13 0-.23-.11-.23-.23V6.74c.01-.13.1-.22.23-.22h1.4c.13 0 .22.11.23.22v.66c.5-.68 1.3-1.09 2.16-1.1h.03c1.09 0 2.09.6 2.6 1.55.45-.95 1.4-1.55 2.44-1.56 1.62 0 2.93 1.25 2.9 2.78l.03 5.17z' opacity='.9' fill='%23fff'/%3E%3Cpath class='st1' d='M84.34 13.59l-.07-.13-1.96-2.99 1.94-2.95c.44-.67.26-1.56-.41-2.02-.02 0-.03 0-.04-.01-.23-.15-.5-.22-.78-.22h-1.61c-.56 0-1.08.29-1.37.78l-.32.55-.34-.56c-.29-.48-.81-.77-1.38-.77h-1.6c-.6 0-1.13.37-1.35.92a5.59 5.59 0 0 0-7.26.45c-.35.34-.65.72-.89 1.14-.9-1.62-2.58-2.72-4.5-2.72-.5 0-1.01.07-1.48.23V3.51c0-.82-.66-1.48-1.47-1.48h-1.4c-.81 0-1.47.66-1.47 1.47v3.75a5.12 5.12 0 0 0-4.17-2.19c-.74 0-1.46.16-2.12.47-.24-.17-.54-.26-.84-.26h-1.4c-.45 0-.87.21-1.15.56a1.498 1.498 0 0 0-1.16-.55h-1.39c-.3 0-.6.09-.84.26-.67-.3-1.39-.46-2.12-.46-1.83 0-3.43 1-4.37 2.5-.2-.46-.48-.89-.83-1.25-.8-.81-1.89-1.25-3.02-1.25h-.01c-.89.01-1.75.33-2.46.88-.74-.57-1.64-.88-2.57-.88h-.03c-.29 0-.58.03-.86.11-.28.06-.56.16-.82.28-.21-.12-.45-.18-.7-.18h-1.4c-.82 0-1.47.66-1.47 1.47v7.5c0 .82.66 1.47 1.47 1.47h1.4c.82 0 1.48-.66 1.48-1.48V9.79c.03-.36.23-.59.36-.59.18 0 .38.18.38.47v4.57c0 .82.66 1.47 1.47 1.47h1.41c.82 0 1.47-.66 1.47-1.47l-.01-4.57c.06-.32.25-.47.35-.47.18 0 .38.18.38.47v4.57c0 .82.66 1.47 1.47 1.47h1.41c.82 0 1.47-.66 1.47-1.47v-.38a5.068 5.068 0 0 0 4.06 2.06c.74 0 1.46-.16 2.12-.47.24.17.54.26.84.26h1.39c.3 0 .6-.09.84-.26v2.01c0 .82.66 1.47 1.47 1.47h1.4c.82 0 1.47-.66 1.47-1.47v-1.77c.48.15.99.23 1.49.22 1.7 0 3.22-.87 4.17-2.2v.52c0 .82.66 1.47 1.47 1.47h1.4c.3 0 .6-.09.84-.26.66.31 1.39.47 2.12.47 1.92 0 3.6-1.1 4.49-2.73 1.54 2.65 4.95 3.53 7.58 1.98.18-.11.36-.22.53-.36.22.55.76.91 1.35.9H78c.56 0 1.08-.29 1.37-.78l.37-.61.37.61c.29.48.81.78 1.38.78h1.6c.81 0 1.46-.66 1.45-1.46-.05-.22-.1-.44-.2-.65zm-48.48.88h-1.41c-.13 0-.23-.11-.23-.23V9.68c0-.98-.74-1.71-1.62-1.71-.8 0-1.46.7-1.59 1.62l.01 4.66c0 .13-.1.23-.23.23h-1.41c-.13 0-.23-.11-.23-.23V9.68c0-.98-.74-1.71-1.62-1.71-.85 0-1.54.79-1.6 1.8v4.48c0 .13-.1.23-.23.23h-1.4c-.13 0-.23-.11-.23-.23V6.74a.23.23 0 0 1 .23-.22h1.4c.13 0 .22.11.23.22v.66c.5-.68 1.3-1.09 2.16-1.1h.03c1.09 0 2.09.6 2.6 1.55.45-.95 1.4-1.55 2.44-1.56 1.62 0 2.93 1.25 2.9 2.78l.01 5.16c.02.13-.09.23-.21.24zm10.11-.23c0 .13-.1.23-.23.23h-1.4c-.13 0-.23-.11-.23-.23v-.74c-.7.76-1.69 1.18-2.72 1.18-2.17 0-3.94-1.87-3.94-4.19s1.77-4.19 3.94-4.19c1.03 0 2.02.43 2.73 1.18v-.74c0-.13.1-.23.23-.23h1.4c.12-.01.22.08.23.21V14.25h-.01v-.01zm6.44.43c-1.03 0-2.02-.43-2.73-1.18v3.97c0 .13-.1.23-.23.23h-1.4c-.13 0-.23-.1-.23-.23V6.75c0-.13.1-.22.23-.22h1.4c.13 0 .23.11.23.23v.73a3.73 3.73 0 0 1 2.73-1.18c2.17 0 3.94 1.86 3.94 4.18s-1.77 4.18-3.94 4.18zm13.83-3.28c-.39 1.87-1.96 3.29-3.84 3.29-1.03 0-2.02-.43-2.73-1.18v.73c0 .13-.1.23-.23.23h-1.4c-.13 0-.23-.11-.23-.23V3.51c0-.13.1-.23.23-.23h1.4c.13 0 .23.11.23.23v3.97a3.72 3.72 0 0 1 2.73-1.17c1.88 0 3.45 1.4 3.84 3.28.13.6.13 1.21 0 1.8zm5.43 3.29c-2 .01-3.73-1.35-4.17-3.3-.13-.59-.13-1.19 0-1.77a4.243 4.243 0 0 1 4.17-3.3c2.36 0 4.26 1.87 4.26 4.19s-1.9 4.18-4.26 4.18zm11.37-.21h-1.61c-.13 0-.24-.06-.3-.17l-1.44-2.39-1.44 2.39a.34.34 0 0 1-.3.17h-1.61c-.04 0-.08-.01-.12-.03-.09-.06-.13-.19-.06-.28l2.43-3.68-2.39-3.64a.213.213 0 0 1-.03-.12c0-.12.09-.21.21-.21h1.61c.13 0 .24.06.3.17l1.41 2.36 1.41-2.36a.34.34 0 0 1 .3-.17h1.61c.04 0 .08.01.12.03.09.06.13.19.06.28l-2.38 3.64 2.43 3.67c.02.03.03.07.03.12-.03.13-.12.22-.24.22z' opacity='.35'/%3E%3Cpath class='st0' d='M10.5 1.24c-5.11 0-9.25 4.15-9.25 9.25s4.15 9.25 9.25 9.25 9.25-4.15 9.25-9.25c0-5.11-4.14-9.25-9.25-9.25zm4.39 11.53c-1.93 1.93-4.78 2.31-6.7 2.31-.7 0-1.41-.05-2.1-.16 0 0-1.02-5.64 2.14-8.81a4.4 4.4 0 0 1 3.13-1.28c1.27 0 2.49.51 3.39 1.42 1.84 1.84 1.89 4.75.14 6.52z' opacity='.9' fill='%23fff'/%3E%3Cpath class='st1' d='M10.5-.01C4.7-.01 0 4.7 0 10.49s4.7 10.5 10.5 10.5S21 16.29 21 10.49C20.99 4.7 16.3-.01 10.5-.01zm0 19.75c-5.11 0-9.25-4.15-9.25-9.25s4.14-9.26 9.25-9.26 9.25 4.15 9.25 9.25c0 5.13-4.14 9.26-9.25 9.26z' opacity='.35'/%3E%3Cpath class='st1' d='M14.74 6.25c-1.84-1.84-4.76-1.9-6.51-.15-3.16 3.17-2.14 8.81-2.14 8.81s5.64 1.02 8.81-2.14c1.74-1.77 1.69-4.68-.16-6.52zm-2.27 4.09l-.91 1.87-.9-1.87-1.86-.91 1.86-.9.9-1.87.91 1.87 1.86.9-1.86.91z' opacity='.35'/%3E%3Cpath class='st0' opacity='.9' fill='%23fff' d='M14.33 9.43l-1.86.91-.91 1.87-.9-1.87-1.86-.91 1.86-.9.9-1.87.91 1.87z'/%3E%3C/svg%3E")
+                }
+            
+                a.mapboxgl-ctrl-logo.mapboxgl-compact {
+                    width: 21px;
+                    height: 21px;
+                    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 21 21'%3E%3Cpath d='M10.5 1.25c-5.11 0-9.25 4.15-9.25 9.25s4.15 9.25 9.25 9.25 9.25-4.15 9.25-9.25c0-5.11-4.14-9.25-9.25-9.25zm4.39 11.53c-1.93 1.93-4.78 2.31-6.7 2.31-.7 0-1.41-.05-2.1-.16 0 0-1.02-5.64 2.14-8.81a4.4 4.4 0 0 1 3.13-1.28c1.27 0 2.49.51 3.39 1.42 1.84 1.84 1.89 4.75.14 6.52z' class='st0' opacity='.9' fill='%23fff'/%3E%3Cpath d='M10.5 0C4.7 0 0 4.71 0 10.5S4.7 21 10.5 21 21 16.3 21 10.5C20.99 4.71 16.3 0 10.5 0zm0 19.75c-5.11 0-9.25-4.15-9.25-9.25s4.14-9.26 9.25-9.26 9.25 4.15 9.25 9.25c0 5.13-4.14 9.26-9.25 9.26z' class='st1' opacity='.35'/%3E%3Cpath d='M14.74 6.26c-1.84-1.84-4.76-1.9-6.51-.15-3.16 3.17-2.14 8.81-2.14 8.81s5.64 1.02 8.81-2.14c1.74-1.77 1.69-4.68-.16-6.52zm-2.27 4.09l-.91 1.87-.9-1.87-1.86-.91 1.86-.9.9-1.87.91 1.87 1.86.9z' class='st1' opacity='.35'/%3E%3Cpath class='st0' opacity='.9' fill='%23fff' d='M11.56 12.22l-.9-1.87-1.86-.91 1.86-.9.9-1.87.91 1.87 1.86.9-1.86.91z'/%3E%3C/svg%3E")
+                }
+            
+                .mapboxgl-ctrl.mapboxgl-ctrl-attrib {
+                    padding: 0 5px;
+                    background-color: hsla(0, 0%, 100%, .5);
+                    margin: 0
+                }
+            
+                @media screen {
+                    .mapboxgl-ctrl-attrib.mapboxgl-compact {
+                        margin: 10px;
+                        position: relative;
+                        background-color: #fff;
+                        border-radius: 3px 12px 12px 3px
+                    }
+            
+                    .mapboxgl-ctrl-attrib.mapboxgl-compact:hover {
+                        padding: 2px 24px 2px 4px;
+                        visibility: visible
+                    }
+            
+                    .mapboxgl-ctrl-bottom-left>.mapboxgl-ctrl-attrib.mapboxgl-compact:hover,
+                    .mapboxgl-ctrl-top-left>.mapboxgl-ctrl-attrib.mapboxgl-compact:hover {
+                        padding: 2px 4px 2px 24px;
+                        border-radius: 12px 3px 3px 12px
+                    }
+            
+                    .mapboxgl-ctrl-attrib.mapboxgl-compact .mapboxgl-ctrl-attrib-inner {
+                        display: none
+                    }
+            
+                    .mapboxgl-ctrl-attrib.mapboxgl-compact:hover .mapboxgl-ctrl-attrib-inner {
+                        display: block
+                    }
+            
+                    .mapboxgl-ctrl-attrib.mapboxgl-compact:after {
+                        content: "";
+                        cursor: pointer;
+                        position: absolute;
+                        background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='%23333' fill-rule='evenodd' d='M4 10a6 6 0 1 0 12 0 6 6 0 1 0-12 0m5-3a1 1 0 1 0 2 0 1 1 0 1 0-2 0m0 3a1 1 0 1 1 2 0v3a1 1 0 1 1-2 0'/%3E%3C/svg%3E");
+                        background-color: hsla(0, 0%, 100%, .5);
+                        width: 24px;
+                        height: 24px;
+                        -webkit-box-sizing: border-box;
+                        box-sizing: border-box;
+                        border-radius: 12px
+                    }
+            
+                    .mapboxgl-ctrl-bottom-right>.mapboxgl-ctrl-attrib.mapboxgl-compact:after {
+                        bottom: 0;
+                        right: 0
+                    }
+            
+                    .mapboxgl-ctrl-top-right>.mapboxgl-ctrl-attrib.mapboxgl-compact:after {
+                        top: 0;
+                        right: 0
+                    }
+            
+                    .mapboxgl-ctrl-top-left>.mapboxgl-ctrl-attrib.mapboxgl-compact:after {
+                        top: 0;
+                        left: 0
+                    }
+            
+                    .mapboxgl-ctrl-bottom-left>.mapboxgl-ctrl-attrib.mapboxgl-compact:after {
+                        bottom: 0;
+                        left: 0
+                    }
+                }
+            
+                .mapboxgl-ctrl-attrib a {
+                    color: rgba(0, 0, 0, .75);
+                    text-decoration: none
+                }
+            
+                .mapboxgl-ctrl-attrib a:hover {
+                    color: inherit;
+                    text-decoration: underline
+                }
+            
+                .mapboxgl-ctrl-attrib .mapbox-improve-map {
+                    font-weight: 700;
+                    margin-left: 2px
+                }
+            
+                .mapboxgl-attrib-empty {
+                    display: none
+                }
+            
+                .mapboxgl-ctrl-scale {
+                    background-color: hsla(0, 0%, 100%, .75);
+                    font-size: 10px;
+                    border: 2px solid #333;
+                    border-top: #333;
+                    padding: 0 5px;
+                    color: #333;
+                    -webkit-box-sizing: border-box;
+                    box-sizing: border-box
+                }
+            
+                .mapboxgl-popup {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    display: -webkit-box;
+                    display: -ms-flexbox;
+                    display: flex;
+                    will-change: transform;
+                    pointer-events: none
+                }
+            
+                .mapboxgl-popup-anchor-top,
+                .mapboxgl-popup-anchor-top-left,
+                .mapboxgl-popup-anchor-top-right {
+                    -webkit-box-orient: vertical;
+                    -webkit-box-direction: normal;
+                    -ms-flex-direction: column;
+                    flex-direction: column
+                }
+            
+                .mapboxgl-popup-anchor-bottom,
+                .mapboxgl-popup-anchor-bottom-left,
+                .mapboxgl-popup-anchor-bottom-right {
+                    -webkit-box-orient: vertical;
+                    -webkit-box-direction: reverse;
+                    -ms-flex-direction: column-reverse;
+                    flex-direction: column-reverse
+                }
+            
+                .mapboxgl-popup-anchor-left {
+                    -webkit-box-orient: horizontal;
+                    -webkit-box-direction: normal;
+                    -ms-flex-direction: row;
+                    flex-direction: row
+                }
+            
+                .mapboxgl-popup-anchor-right {
+                    -webkit-box-orient: horizontal;
+                    -webkit-box-direction: reverse;
+                    -ms-flex-direction: row-reverse;
+                    flex-direction: row-reverse
+                }
+            
+                .mapboxgl-popup-tip {
+                    width: 0;
+                    height: 0;
+                    border: 10px solid rgba(0, 0, 0, 0);
+                    z-index: 1
+                }
+            
+                .mapboxgl-popup-anchor-top .mapboxgl-popup-tip {
+                    -webkit-align-self: center;
+                    -ms-flex-item-align: center;
+                    align-self: center;
+                    border-top: none;
+                    border-bottom-color: #fff
+                }
+            
+                .mapboxgl-popup-anchor-top-left .mapboxgl-popup-tip {
+                    -webkit-align-self: flex-start;
+                    -ms-flex-item-align: start;
+                    align-self: flex-start;
+                    border-top: none;
+                    border-left: none;
+                    border-bottom-color: #fff
+                }
+            
+                .mapboxgl-popup-anchor-top-right .mapboxgl-popup-tip {
+                    -webkit-align-self: flex-end;
+                    -ms-flex-item-align: end;
+                    align-self: flex-end;
+                    border-top: none;
+                    border-right: none;
+                    border-bottom-color: #fff
+                }
+            
+                .mapboxgl-popup-anchor-bottom .mapboxgl-popup-tip {
+                    -webkit-align-self: center;
+                    -ms-flex-item-align: center;
+                    align-self: center;
+                    border-bottom: none;
+                    border-top-color: #fff
+                }
+            
+                .mapboxgl-popup-anchor-bottom-left .mapboxgl-popup-tip {
+                    -webkit-align-self: flex-start;
+                    -ms-flex-item-align: start;
+                    align-self: flex-start;
+                    border-bottom: none;
+                    border-left: none;
+                    border-top-color: #fff
+                }
+            
+                .mapboxgl-popup-anchor-bottom-right .mapboxgl-popup-tip {
+                    -webkit-align-self: flex-end;
+                    -ms-flex-item-align: end;
+                    align-self: flex-end;
+                    border-bottom: none;
+                    border-right: none;
+                    border-top-color: #fff
+                }
+            
+                .mapboxgl-popup-anchor-left .mapboxgl-popup-tip {
+                    -webkit-align-self: center;
+                    -ms-flex-item-align: center;
+                    align-self: center;
+                    border-left: none;
+                    border-right-color: #fff
+                }
+            
+                .mapboxgl-popup-anchor-right .mapboxgl-popup-tip {
+                    -webkit-align-self: center;
+                    -ms-flex-item-align: center;
+                    align-self: center;
+                    border-right: none;
+                    border-left-color: #fff
+                }
+            
+                .mapboxgl-popup-close-button {
+                    position: absolute;
+                    right: 0;
+                    top: 0;
+                    border: 0;
+                    border-radius: 0 3px 0 0;
+                    cursor: pointer;
+                    background-color: rgba(0, 0, 0, 0)
+                }
+            
+                .mapboxgl-popup-close-button:hover {
+                    background-color: rgba(0, 0, 0, .05)
+                }
+            
+                .mapboxgl-popup-content {
+                    position: relative;
+                    background: #fff;
+                    border-radius: 3px;
+                    -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, .1);
+                    box-shadow: 0 1px 2px rgba(0, 0, 0, .1);
+                    padding: 10px 10px 15px;
+                    pointer-events: auto
+                }
+            
+                .mapboxgl-popup-anchor-top-left .mapboxgl-popup-content {
+                    border-top-left-radius: 0
+                }
+            
+                .mapboxgl-popup-anchor-top-right .mapboxgl-popup-content {
+                    border-top-right-radius: 0
+                }
+            
+                .mapboxgl-popup-anchor-bottom-left .mapboxgl-popup-content {
+                    border-bottom-left-radius: 0
+                }
+            
+                .mapboxgl-popup-anchor-bottom-right .mapboxgl-popup-content {
+                    border-bottom-right-radius: 0
+                }
+            
+                .mapboxgl-marker {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    will-change: transform
+                }
+            
+                .mapboxgl-user-location-dot {
+                    -webkit-box-shadow: 0 0 2px rgba(0, 0, 0, .25);
+                    box-shadow: 0 0 2px rgba(0, 0, 0, .25)
+                }
+            
+                .mapboxgl-user-location-dot,
+                .mapboxgl-user-location-dot:before {
+                    background-color: #1da1f2;
+                    width: 15px;
+                    height: 15px;
+                    border-radius: 50%
+                }
+            
+                .mapboxgl-user-location-dot:before {
+                    content: "";
+                    position: absolute;
+                    -webkit-animation: mapboxgl-user-location-dot-pulse 2s infinite;
+                    animation: mapboxgl-user-location-dot-pulse 2s infinite
+                }
+            
+                .mapboxgl-user-location-dot:after {
+                    border-radius: 50%;
+                    border: 2px solid #fff;
+                    content: "";
+                    height: 19px;
+                    left: -2px;
+                    position: absolute;
+                    top: -2px;
+                    width: 19px;
+                    -webkit-box-sizing: border-box;
+                    box-sizing: border-box
+                }
+            
+                @-webkit-keyframes mapboxgl-user-location-dot-pulse {
+                    0% {
+                        -webkit-transform: scale(1);
+                        opacity: 1
+                    }
+            
+                    70% {
+                        -webkit-transform: scale(3);
+                        opacity: 0
+                    }
+            
+                    to {
+                        -webkit-transform: scale(1);
+                        opacity: 0
+                    }
+                }
+            
+                @keyframes mapboxgl-user-location-dot-pulse {
+                    0% {
+                        -webkit-transform: scale(1);
+                        transform: scale(1);
+                        opacity: 1
+                    }
+            
+                    70% {
+                        -webkit-transform: scale(3);
+                        transform: scale(3);
+                        opacity: 0
+                    }
+            
+                    to {
+                        -webkit-transform: scale(1);
+                        transform: scale(1);
+                        opacity: 0
+                    }
+                }
+            
+                .mapboxgl-user-location-dot-stale {
+                    background-color: #aaa
+                }
+            
+                .mapboxgl-user-location-dot-stale:after {
+                    display: none
+                }
+            
+                .mapboxgl-crosshair,
+                .mapboxgl-crosshair .mapboxgl-interactive,
+                .mapboxgl-crosshair .mapboxgl-interactive:active {
+                    cursor: crosshair
+                }
+            
+                .mapboxgl-boxzoom {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 0;
+                    height: 0;
+                    background: #fff;
+                    border: 2px dotted #202020;
+                    opacity: .5
+                }
+            
+                @media print {
+                    .mapbox-improve-map {
+                        display: none
+                    }
+                }
+            
+                article,
+                aside,
+                details,
+                figcaption,
+                figure,
+                footer,
+                header,
+                hgroup,
+                main,
+                nav,
+                section,
+                summary {
+                    display: block
+                }
+            
+                audio,
+                canvas,
+                video {
+                    display: inline-block
+                }
+            
+                audio:not([controls]) {
+                    display: none;
+                    height: 0
+                }
+            
+                [hidden],
+                template {
+                    display: none
+                }
+            
+                html {
+                    font-family: sans-serif;
+                    -ms-text-size-adjust: 100%;
+                    -webkit-text-size-adjust: 100%
+                }
+            
+                body {
+                    margin: 0
+                }
+            
+                a {
+                    background: rgba(0, 0, 0, 0)
+                }
+            
+                a:focus {
+                    outline: thin dotted
+                }
+            
+                a:active,
+                a:hover {
+                    outline: 0
+                }
+            
+                h1 {
+                    font-size: 2em;
+                    margin: .67em 0
+                }
+            
+                abbr[title] {
+                    border-bottom: 1px dotted
+                }
+            
+                b,
+                strong {
+                    font-weight: 1000
+                }
+            
+                dfn {
+                    font-style: italic
+                }
+            
+                hr {
+                    -webkit-box-sizing: content-box;
+                    box-sizing: content-box;
+                    height: 0
+                }
+            
+                mark {
+                    background: #ff0;
+                    color: #000
+                }
+            
+                code,
+                kbd,
+                pre,
+                samp {
+                    font-family: monospace, serif;
+                    font-size: 1em
+                }
+            
+                pre {
+                    white-space: pre-wrap
+                }
+            
+                q {
+                    quotes: "“" "”" "‘" "’"
+                }
+            
+                small {
+                    font-size: 80%
+                }
+            
+                sub,
+                sup {
+                    font-size: 75%;
+                    line-height: 0;
+                    position: relative;
+                    vertical-align: baseline
+                }
+            
+                sup {
+                    top: -.5em
+                }
+            
+                sub {
+                    bottom: -.25em
+                }
+            
+                img {
+                    border: 0
+                }
+            
+                svg:not(:root) {
+                    overflow: hidden
+                }
+            
+                figure {
+                    margin: 0
+                }
+            
+                fieldset {
+                    border: 1px solid silver;
+                    margin: 0 2px;
+                    padding: .35em .625em .75em
+                }
+            
+                legend {
+                    border: 0;
+                    padding: 0
+                }
+            
+                button,
+                input,
+                select,
+                textarea {
+                    font-family: inherit;
+                    font-size: 100%;
+                    margin: 0
+                }
+            
+                button,
+                input {
+                    line-height: normal
+                }
+            
+                button,
+                select {
+                    text-transform: none
+                }
+            
+                button,
+                html input[type=button],
+                input[type=reset],
+                input[type=submit] {
+                    -webkit-appearance: button;
+                    cursor: pointer
+                }
+            
+                button[disabled],
+                html input[disabled] {
+                    cursor: default
+                }
+            
+                input[type=checkbox],
+                input[type=radio] {
+                    -webkit-box-sizing: border-box;
+                    box-sizing: border-box;
+                    padding: 0
+                }
+            
+                input[type=search] {
+                    -webkit-appearance: textfield;
+                    -webkit-box-sizing: content-box;
+                    box-sizing: content-box
+                }
+            
+                input[type=search]::-webkit-search-cancel-button,
+                input[type=search]::-webkit-search-decoration {
+                    -webkit-appearance: none
+                }
+            
+                button::-moz-focus-inner,
+                input::-moz-focus-inner {
+                    border: 0;
+                    padding: 0
+                }
+            
+                textarea {
+                    overflow: auto;
+                    vertical-align: top
+                }
+            
+                table {
+                    border-collapse: collapse;
+                    border-spacing: 0
+                }
+            
+                .slick-slider {
+                    -webkit-box-sizing: border-box;
+                    box-sizing: border-box;
+                    -webkit-touch-callout: none;
+                    -webkit-user-select: none;
+                    -moz-user-select: none;
+                    -ms-user-select: none;
+                    user-select: none;
+                    -ms-touch-action: pan-y;
+                    touch-action: pan-y;
+                    -webkit-tap-highlight-color: transparent
+                }
+            
+                .slick-list,
+                .slick-slider {
+                    position: relative;
+                    display: block
+                }
+            
+                .slick-list {
+                    overflow: hidden;
+                    margin: 0;
+                    padding: 0
+                }
+            
+                .slick-list:focus {
+                    outline: none
+                }
+            
+                .slick-list.dragging {
+                    cursor: pointer;
+                    cursor: hand
+                }
+            
+                .slick-slider .slick-list,
+                .slick-slider .slick-track {
+                    -webkit-transform: translateZ(0);
+                    -ms-transform: translateZ(0);
+                    transform: translateZ(0)
+                }
+            
+                .slick-track {
+                    position: relative;
+                    left: 0;
+                    top: 0;
+                    display: block;
+                    margin-left: auto;
+                    margin-right: auto
+                }
+            
+                .slick-track:after,
+                .slick-track:before {
+                    content: "";
+                    display: table
+                }
+            
+                .slick-track:after {
+                    clear: both
+                }
+            
+                .slick-loading .slick-track {
+                    visibility: hidden
+                }
+            
+                .slick-slide {
+                    float: left;
+                    height: 100%;
+                    min-height: 1px;
+                    display: none
+                }
+            
+                [dir=rtl] .slick-slide {
+                    float: right
+                }
+            
+                .slick-slide img {
+                    display: block
+                }
+            
+                .slick-slide.slick-loading img {
+                    display: none
+                }
+            
+                .slick-slide.dragging img {
+                    pointer-events: none
+                }
+            
+                .slick-initialized .slick-slide {
+                    display: block
+                }
+            
+                .slick-loading .slick-slide {
+                    visibility: hidden
+                }
+            
+                .slick-vertical .slick-slide {
+                    display: block;
+                    height: auto;
+                    border: 1px solid rgba(0, 0, 0, 0)
+                }
+            
+                .slick-arrow.slick-hidden {
+                    display: none
+                }
+            
+                .header {
+                    -ms-flex-negative: 0;
+                    flex-shrink: 0;
+                    height: 64px;
+                    background-color: #fff;
+                    -webkit-transition: all .3s cubic-bezier(.35, 0, 0, 1);
+                    -o-transition: all .3s cubic-bezier(.35, 0, 0, 1);
+                    transition: all .3s cubic-bezier(.35, 0, 0, 1);
+                    -webkit-transition-property: height;
+                    -o-transition-property: height;
+                    transition-property: height;
+                    width: 100%;
+                    border-bottom: 1px solid rgba(32, 42, 46, .1)
+                }
+            
+                .header.open {
+                    position: absolute;
+                    z-index: 99999999;
+                    top: 0;
+                    left: 0;
+                    height: auto;
+                    padding-bottom: 32px;
+                    border-bottom: none
+                }
+            
+                .header.open .container {
+                    padding: 0
+                }
+            
+                .header.open .content {
+                    -webkit-box-orient: vertical;
+                    -webkit-box-direction: normal;
+                    -ms-flex-direction: column;
+                    flex-direction: column;
+                    -webkit-box-align: unset;
+                    -ms-flex-align: unset;
+                    align-items: unset
+                }
+            
+                .header.open .content .logo {
+                    -ms-flex-item-align: start;
+                    align-self: flex-start;
+                    margin: 12px 16px 16px
+                }
+            
+                .header.open .content .go-back {
+                    -ms-flex-item-align: center;
+                    align-self: center;
+                    margin-bottom: 8px
+                }
+            
+                .header.open .content .go-back,
+                .header.open .content .navigation {
+                    opacity: 1 !important;
+                    display: block !important;
+                    -webkit-transition: all .3s cubic-bezier(.35, 0, 0, 1);
+                    -o-transition: all .3s cubic-bezier(.35, 0, 0, 1);
+                    transition: all .3s cubic-bezier(.35, 0, 0, 1)
+                }
+            
+                .header.open .content .navigation {
+                    width: 100%;
+                    border-top: 1px solid rgba(32, 42, 46, .1);
+                    padding-top: 48px
+                }
+            
+                .header.open .content .navigation ul {
+                    display: -webkit-box;
+                    display: -ms-flexbox;
+                    display: flex;
+                    -webkit-box-orient: vertical;
+                    -webkit-box-direction: normal;
+                    -ms-flex-direction: column;
+                    flex-direction: column
+                }
+            
+                .header.open .content .navigation ul li {
+                    text-align: center;
+                    margin: 0 0 40px !important
+                }
+            
+                @media (min-width:1024px) {
+                    .header {
+                        height: 112px
+                    }
+                }
+            
+                .header .container {
+                    height: 100%;
+                    max-width: 1330px
+                }
+            
+                .header .container .content {
+                    -webkit-box-pack: justify;
+                    -ms-flex-pack: justify;
+                    justify-content: space-between;
+                    height: 100%
+                }
+            
+                .header .container .content,
+                .header .container .content .action {
+                    display: -webkit-box;
+                    display: -ms-flexbox;
+                    display: flex;
+                    -webkit-box-align: center;
+                    -ms-flex-align: center;
+                    align-items: center
+                }
+            
+                .header .container .content .action {
+                    position: absolute;
+                    height: 24px;
+                    width: 24px;
+                    right: 24px;
+                    top: 24px;
+                    -webkit-box-pack: center;
+                    -ms-flex-pack: center;
+                    justify-content: center
+                }
+            
+                @media (min-width:1024px) {
+                    .header .container .content .action {
+                        display: none
+                    }
+                }
+            
+                .header .container .content .action .hamburger {
+                    height: 16px;
+                    width: 24px;
+                    display: none
+                }
+            
+                .header .container .content .action .hamburger.active {
+                    display: block
+                }
+            
+                .header .container .content .action .hamburger svg {
+                    height: 16px;
+                    width: 24px;
+                    color: #3398db
+                }
+            
+                .header .container .content .action .exit {
+                    height: 16px;
+                    width: 16px;
+                    display: none
+                }
+            
+                .header .container .content .action .exit.active {
+                    display: block
+                }
+            
+                .header .container .content .action .exit svg {
+                    height: 16px;
+                    width: 16px;
+                    color: #3398db
+                }
+            
+                .header .container .content .logo {
+                    width: 112px;
+                    height: 40px;
+                    -ms-flex-negative: 0;
+                    flex-shrink: 0
+                }
+            
+                .header .container .content .logo svg {
+                    width: 112px;
+                    height: 40px
+                }
+            
+                @media (min-width:1024px) {
+            
+                    .header .container .content .logo,
+                    .header .container .content .logo svg {
+                        width: 200px;
+                        height: 64px
+                    }
+                }
+            
+                .header .container .content .navigation {
+                    opacity: 0;
+                    display: none
+                }
+            
+                @media (min-width:1024px) {
+                    .header .container .content .navigation {
+                        opacity: 1;
+                        display: block
+                    }
+                }
+            
+                .header .container .content .navigation ul.mobile-languages {
+                    height: 0;
+                    -webkit-transition: all .3s cubic-bezier(.35, 0, 0, 1);
+                    -o-transition: all .3s cubic-bezier(.35, 0, 0, 1);
+                    transition: all .3s cubic-bezier(.35, 0, 0, 1);
+                    display: none
+                }
+            
+                .header .container .content .navigation ul.mobile-languages.active {
+                    height: 100%;
+                    display: -webkit-box;
+                    display: -ms-flexbox;
+                    display: flex
+                }
+            
+                .header .container .content .navigation ul li {
+                    display: inline-block
+                }
+            
+                .header .container .content .navigation ul li:not(:last-of-type) {
+                    margin-right: 40px
+                }
+            
+                .header .container .content .navigation ul li a {
+                    display: block;
+                    font-family: myriad-pro, sans-serif;
+                    font-weight: 700;
+                    font-style: normal;
+                    font-display: auto;
+                    -webkit-font-smoothing: antialiased;
+                    font-size: 16px;
+                    line-height: 16px;
+                    letter-spacing: normal;
+                    padding-top: 2px;
+                    padding-bottom: 6px;
+                    color: #3398db;
+                    letter-spacing: .5px;
+                    -webkit-transition: all .3s cubic-bezier(.35, 0, 0, 1);
+                    -o-transition: all .3s cubic-bezier(.35, 0, 0, 1);
+                    transition: all .3s cubic-bezier(.35, 0, 0, 1)
+                }
+            
+                .header .container .content .navigation ul li a:hover {
+                    color: #2d87c2
+                }
+            
+                .header .container .content .navigation ul li a.current {
+                    display: none;
+                    -webkit-box-align: center;
+                    -ms-flex-align: center;
+                    align-items: center;
+                    cursor: pointer
+                }
+            
+                @media (max-width:1023px) {
+                    .header .container .content .navigation ul li a.current {
+                        display: -webkit-inline-box;
+                        display: -ms-inline-flexbox;
+                        display: inline-flex
+                    }
+                }
+            
+                .header .container .content .navigation ul li a.current span,
+                .header .container .content .navigation ul li a.current svg {
+                    -webkit-transition: all .3s cubic-bezier(.35, 0, 0, 1);
+                    -o-transition: all .3s cubic-bezier(.35, 0, 0, 1);
+                    transition: all .3s cubic-bezier(.35, 0, 0, 1);
+                    color: #3398db
+                }
+            
+                .header .container .content .navigation ul li a.current svg {
+                    color: #3398db;
+                    width: 12px;
+                    height: 12px;
+                    margin-left: 8px;
+                    -webkit-transform: rotate(0deg);
+                    -ms-transform: rotate(0deg);
+                    transform: rotate(0deg);
+                    margin-top: -1px
+                }
+            
+                .header .container .content .navigation ul li a.current svg.rotate {
+                    -webkit-transform: rotate(180deg);
+                    -ms-transform: rotate(180deg);
+                    transform: rotate(180deg)
+                }
+            
+                .header .container .content .go-back {
+                    opacity: 0;
+                    border: 2px solid #3398db;
+                    display: none;
+                    font-family: myriad-pro, sans-serif;
+                    font-weight: 700;
+                    font-style: normal;
+                    font-display: auto;
+                    -webkit-font-smoothing: antialiased;
+                    font-size: 16px;
+                    line-height: 16px;
+                    letter-spacing: normal;
+                    color: #3398db;
+                    letter-spacing: .5px;
+                    -webkit-transition: all .3s cubic-bezier(.35, 0, 0, 1);
+                    -o-transition: all .3s cubic-bezier(.35, 0, 0, 1);
+                    transition: all .3s cubic-bezier(.35, 0, 0, 1);
+                    border-radius: 32px;
+                    padding: 10px 16px
+                }
+            
+                @media (min-width:1024px) {
+                    .header .container .content .go-back {
+                        opacity: 1;
+                        display: block
+                    }
+                }
+            
+                .header .container .content .go-back:hover {
+                    color: #2d87c2;
+                    border-color: #2d87c2
+                }
+            
+                .header .container .content .language-block {
+                    display: -webkit-box;
+                    display: -ms-flexbox;
+                    display: flex;
+                    -webkit-box-align: center;
+                    -ms-flex-align: center;
+                    align-items: center
+                }
+            
+                .header .container .content .language-switch {
+                    position: relative;
+                    margin-top: 16px;
+                    margin-bottom: 16px;
+                    display: none;
+                    margin-right: 48px
+                }
+            
+                @media (min-width:1024px) {
+                    .header .container .content .language-switch {
+                        display: block;
+                        margin-top: 0;
+                        margin-bottom: 0
+                    }
+                }
+            
+                .header .container .content .language-switch:hover .current span,
+                .header .container .content .language-switch:hover .current svg {
+                    color: #2d87c2
+                }
+            
+                .header .container .content .language-switch .current {
+                    display: -webkit-box;
+                    display: -ms-flexbox;
+                    display: flex;
+                    -webkit-box-align: center;
+                    -ms-flex-align: center;
+                    align-items: center;
+                    cursor: pointer
+                }
+            
+                .header .container .content .language-switch .current span,
+                .header .container .content .language-switch .current svg {
+                    -webkit-transition: all .3s cubic-bezier(.35, 0, 0, 1);
+                    -o-transition: all .3s cubic-bezier(.35, 0, 0, 1);
+                    transition: all .3s cubic-bezier(.35, 0, 0, 1);
+                    color: #3398db
+                }
+            
+                .header .container .content .language-switch .current span {
+                    display: inline-block;
+                    font-family: myriad-pro, sans-serif;
+                    font-weight: 700;
+                    font-style: normal;
+                    font-display: auto;
+                    -webkit-font-smoothing: antialiased;
+                    font-size: 16px;
+                    line-height: 16px;
+                    letter-spacing: normal;
+                    padding-top: 2px;
+                    padding-bottom: 6px;
+                    text-transform: uppercase;
+                    color: #3398db
+                }
+            
+                .header .container .content .language-switch .current svg {
+                    color: #3398db;
+                    width: 12px;
+                    height: 12px;
+                    margin-left: 8px;
+                    -webkit-transform: rotate(0deg);
+                    -ms-transform: rotate(0deg);
+                    transform: rotate(0deg);
+                    margin-top: -4px
+                }
+            
+                .header .container .content .language-switch .current svg.rotate {
+                    -webkit-transform: rotate(180deg);
+                    -ms-transform: rotate(180deg);
+                    transform: rotate(180deg)
+                }
+            
+                .header .container .content .language-switch .popup {
+                    z-index: 99999;
+                    background-color: #fff;
+                    -webkit-box-shadow: 0 4px 8px 0 rgba(21, 41, 53, .04);
+                    box-shadow: 0 4px 8px 0 rgba(21, 41, 53, .04);
+                    border-radius: 4px;
+                    border: 1px solid #f2f2f2;
+                    padding: 8px 16px;
+                    position: absolute;
+                    bottom: 40px;
+                    left: -24px;
+                    opacity: 0;
+                    -webkit-transform: translateY(120px);
+                    -ms-transform: translateY(120px);
+                    transform: translateY(120px);
+                    -webkit-transition-property: opacity, -webkit-transform;
+                    transition-property: opacity, -webkit-transform;
+                    -o-transition-property: opacity, transform;
+                    transition-property: opacity, transform;
+                    transition-property: opacity, transform, -webkit-transform;
+                    -webkit-transition: opacity .3s cubic-bezier(.4, 0, .2, 1) .3s, -webkit-transform .3s cubic-bezier(.4, 0, .2, 1) .3s;
+                    transition: opacity .3s cubic-bezier(.4, 0, .2, 1) .3s, -webkit-transform .3s cubic-bezier(.4, 0, .2, 1) .3s;
+                    -o-transition: .3s opacity .3s cubic-bezier(.4, 0, .2, 1), .3s transform .3s cubic-bezier(.4, 0, .2, 1);
+                    transition: opacity .3s cubic-bezier(.4, 0, .2, 1) .3s, transform .3s cubic-bezier(.4, 0, .2, 1) .3s;
+                    transition: opacity .3s cubic-bezier(.4, 0, .2, 1) .3s, transform .3s cubic-bezier(.4, 0, .2, 1) .3s, -webkit-transform .3s cubic-bezier(.4, 0, .2, 1) .3s;
+                    -webkit-transition-delay: 0ms;
+                    -o-transition-delay: 0ms;
+                    transition-delay: 0ms;
+                    pointer-events: none
+                }
+            
+                .header .container .content .language-switch .popup.open {
+                    pointer-events: all;
+                    opacity: 1;
+                    -webkit-transform: translateY(164px);
+                    -ms-transform: translateY(164px);
+                    transform: translateY(164px)
+                }
+            
+                .header .container .content .language-switch .popup ul li {
+                    margin-top: 6px
+                }
+            
+                .header .container .content .language-switch .popup ul li a {
+                    display: block;
+                    letter-spacing: .5px;
+                    font-family: myriad-pro, sans-serif;
+                    font-weight: 700;
+                    font-style: normal;
+                    font-display: auto;
+                    -webkit-font-smoothing: antialiased;
+                    font-size: 16px;
+                    line-height: 16px;
+                    letter-spacing: normal;
+                    padding-top: 2px;
+                    padding-bottom: 6px;
+                    color: #3398db;
+                    -webkit-transition: all .3s cubic-bezier(.35, 0, 0, 1);
+                    -o-transition: all .3s cubic-bezier(.35, 0, 0, 1);
+                    transition: all .3s cubic-bezier(.35, 0, 0, 1)
+                }
+            
+                .header .container .content .language-switch .popup ul li a:hover {
+                    color: #2d87c2
+                }
+            
+                .footer {
+                    min-height: 100%;
+                    height: 100%;
+                    width: 100%;
+                    background-color: #333
+                }
+            
+                @media (max-width:1023px) {
+                    .footer {
+                        padding-top: 8px;
+                        padding-bottom: 8px
+                    }
+                }
+            
+                @media (min-width:1024px) {
+                    .footer {
+                        min-height: auto;
+                        height: 96px
+                    }
+                }
+            
+                .footer .container {
+                    height: 100%;
+                    max-width: 1330px
+                }
+            
+                .footer .content {
+                    display: -webkit-box;
+                    display: -ms-flexbox;
+                    display: flex;
+                    -webkit-box-orient: vertical;
+                    -webkit-box-direction: normal;
+                    -ms-flex-direction: column;
+                    flex-direction: column;
+                    height: 100%
+                }
+            
+                @media (min-width:1024px) {
+                    .footer .content {
+                        -webkit-box-orient: horizontal;
+                        -webkit-box-direction: normal;
+                        -ms-flex-direction: row;
+                        flex-direction: row;
+                        -webkit-box-align: center;
+                        -ms-flex-align: center;
+                        align-items: center
+                    }
+                }
+            
+                .footer .eu {
+                    justify-self: flex-start;
+                    display: -webkit-box;
+                    display: -ms-flexbox;
+                    display: flex;
+                    -webkit-box-flex: 1;
+                    -ms-flex: 1;
+                    flex: 1;
+                    -webkit-box-ordinal-group: 4;
+                    -ms-flex-order: 3;
+                    order: 3;
+                    -webkit-box-orient: horizontal;
+                    -webkit-box-direction: normal;
+                    -ms-flex-direction: row;
+                    flex-direction: row;
+                    -webkit-box-align: start;
+                    -ms-flex-align: start;
+                    align-items: flex-start
+                }
+            
+                @media (min-width:1024px) {
+                    .footer .eu {
+                        -webkit-box-ordinal-group: 1;
+                        -ms-flex-order: 0;
+                        order: 0;
+                        margin-left: 80px;
+                        -webkit-box-align: center;
+                        -ms-flex-align: center;
+                        align-items: center
+                    }
+                }
+            
+                .footer .eu svg {
+                    height: 40px;
+                    width: 64px;
+                    -ms-flex-negative: 0;
+                    flex-shrink: 0
+                }
+            
+                .footer .eu span {
+                    display: block;
+                    font-family: myriad-pro, sans-serif;
+                    font-weight: 400;
+                    font-style: normal;
+                    font-display: auto;
+                    -webkit-font-smoothing: antialiased;
+                    font-size: 10px;
+                    line-height: 12px;
+                    letter-spacing: normal;
+                    padding-top: 3px;
+                    padding-bottom: 5px;
+                    color: #fff;
+                    margin-bottom: 16px;
+                    margin-left: 16px
+                }
+            
+                @media (min-width:768px) {
+                    .footer .eu span {
+                        font-size: 16px;
+                        line-height: 16px;
+                        letter-spacing: normal;
+                        padding-top: 2px;
+                        padding-bottom: 6px
+                    }
+                }
+            
+                @media (min-width:1024px) {
+                    .footer .eu span {
+                        max-width: 350px;
+                        margin-top: 0;
+                        margin-bottom: 0
+                    }
+                }
+            
+                .footer .navigation {
+                    margin-bottom: 16px
+                }
+            
+                @media (min-width:1024px) {
+                    .footer .navigation {
+                        margin-bottom: 0
+                    }
+                }
+            
+                .footer .navigation ul li {
+                    display: inline-block
+                }
+            
+                .footer .navigation ul li:not(:last-of-type) {
+                    margin-right: 40px
+                }
+            
+                .footer .navigation ul li a {
+                    display: block;
+                    font-family: myriad-pro, sans-serif;
+                    font-weight: 400;
+                    font-style: normal;
+                    font-display: auto;
+                    -webkit-font-smoothing: antialiased;
+                    font-size: 16px;
+                    line-height: 16px;
+                    letter-spacing: normal;
+                    padding-top: 2px;
+                    padding-bottom: 6px;
+                    color: #fff;
+                    -webkit-transition: all .3s cubic-bezier(.35, 0, 0, 1);
+                    -o-transition: all .3s cubic-bezier(.35, 0, 0, 1);
+                    transition: all .3s cubic-bezier(.35, 0, 0, 1)
+                }
+            
+                .footer .navigation ul li a:hover {
+                    color: #b3b3b3
+                }
+            
+                .cookies {
+                    position: fixed;
+                    bottom: 0;
+                    left: 0;
+                    width: 100%;
+                    z-index: 9999;
+                    display: none;
+                    background: -o-linear-gradient(top, rgba(26, 26, 26, 0) 0, #1a1a1a 100%);
+                    background: -webkit-gradient(linear, left top, left bottom, from(rgba(26, 26, 26, 0)), to(#1a1a1a));
+                    background: linear-gradient(180deg, rgba(26, 26, 26, 0), #1a1a1a)
+                }
+            
+                .cookies .content {
+                    border: 1px solid #f2f2f2;
+                    border-radius: 4px;
+                    background-color: #fff;
+                    -webkit-box-shadow: 0 4px 8px 0 rgba(21, 41, 53, .04);
+                    box-shadow: 0 4px 8px 0 rgba(21, 41, 53, .04);
+                    display: -webkit-box;
+                    display: -ms-flexbox;
+                    display: flex;
+                    -webkit-box-orient: vertical;
+                    -webkit-box-direction: normal;
+                    -ms-flex-direction: column;
+                    flex-direction: column;
+                    padding: 16px;
+                    margin-bottom: 16px
+                }
+            
+                @media (min-width:768px) {
+                    .cookies .content {
+                        max-width: 320px;
+                        padding: 32px
+                    }
+                }
+            
+                .cookies .content svg {
+                    height: 46px;
+                    width: 46px
+                }
+            
+                .cookies .content h4 {
+                    margin-top: 16px
+                }
+            
+                .cookies .content button {
+                    width: auto;
+                    margin-top: 16px;
+                    max-width: 200px
+                }
+            
+                @media (min-width:768px) {
+                    .cookies .content button {
+                        margin-top: 32px
+                    }
+                }
+            </style>
+    <link rel="stylesheet" href="css/sry4top.css" media="(min-width: 10000px)" onload="this.removeAttribute('media')">
+    <link href="css/app.css" rel="stylesheet">
+    <link href="css/facts.css" rel="stylesheet">
+    <noscript>
+        <link rel="stylesheet" href="https://use.typekit.net/sry4top.css">
+        <link href="/front/css/app.css?id=2e9d452662eb0ddd1a4b" rel="stylesheet">
+        <link href="/front/css/facts.css?id=807e5fc3bacfbb4dd1fc" rel="stylesheet" />
+    </noscript>
+    <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png">
+    <link rel="manifest" href="/front/images/favicons/site.webmanifest">
+    <link rel="mask-icon" href="images/safari-pinned-tab.svg" color="#003787">
+    <link rel="stylesheet" href="css/main.css">
+    <meta name="msapplication-TileColor" content="#003787">
+    <meta name="theme-color" content="#ffffff">    <title>Встречайте будущее - Rail Baltica</title>
+    <meta property="description" content="Things you didn't know about Rail Baltica!">
+    <meta property="og:title" content="Meet the future - Rail Baltica">
+    <meta property="og:description" content="Things you didn't know about Rail Baltica!">
+    <meta property="og:url" content="">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="images/5738bd198ae9f0a84cbe8e1142dc65ea.png">
+    <script>
+        document.body.className += ' js';
+    </script>
+    <script src="js/main.js"></script>
+
+    <section class="header">
+    <div class="container">
+        <div class="content">
+            <a class="logo gtm" href="https://info.railbaltica.org/en" data-gtm-event-category="mapHeader" data-gtm-banner-title="Home">
+                <svg class="" viewBox="0 0 200 64" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <defs>
+        <polygon id="path-1" points="0 63.9020463 199.159916 63.9020463 199.159916 -0.000269473684 0 -0.000269473684"></polygon>
+    </defs>
+    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="header-menu" transform="translate(-32.000000, -21.000000)">
+            <g id="Group-4">
+                <g id="logo" transform="translate(32.000000, 21.000000)">
+                    <g id="rb-logo-full">
+                        <path d="M52.2324884,24.61184 L45.8068884,24.61184 L45.8068884,33.4391242 L52.2324884,33.4391242 C55.0397305,33.4391242 57.0345095,31.98464 57.0345095,29.0419874 C57.0345095,26.1000084 55.0397305,24.61184 52.2324884,24.61184 L52.2324884,24.61184 Z M57.0688674,46.3927242 L51.5897937,35.7053979 L45.8068884,35.7053979 L45.8068884,46.3927242 L43.2361095,46.3927242 L43.2361095,22.3118821 L52.4689516,22.3118821 C56.6633095,22.3118821 59.6052884,24.8489768 59.6052884,29.0083032 C59.6052884,32.5262821 57.4744253,34.8255663 54.3626779,35.4675874 L60.0788884,46.3927242 L57.0688674,46.3927242 Z" id="Fill-1" fill="#001B72"></path>
+                        <path d="M73.5719747,38.5112253 L68.9046905,38.5112253 C66.4019537,38.5112253 65.1839326,39.5257937 65.1839326,41.4538779 C65.1839326,43.3819621 66.3682695,44.2948042 69.0064168,44.2948042 C70.4265432,44.2948042 71.6775747,44.1937516 72.7265011,43.1791832 C73.3011537,42.6375411 73.5719747,41.6903411 73.5719747,40.3038989 L73.5719747,38.5112253 Z M73.5719747,46.3926568 L73.5719747,44.5993095 C72.2185432,45.9513937 71.0018695,46.3913095 68.7699537,46.3913095 C66.4699958,46.3913095 65.1165642,45.9513937 64.0683116,44.8694568 C63.2571958,44.0583411 62.81728,42.8066358 62.81728,41.4868884 C62.81728,38.5799411 64.8457432,36.6855411 68.5665011,36.6855411 L73.5719747,36.6855411 L73.5719747,35.0956463 C73.5719747,32.6609516 72.3539537,31.4429305 69.3102484,31.4429305 C67.1800589,31.4429305 66.0974484,31.9502147 65.1165642,33.3373305 L63.4599747,31.8154779 C64.9481432,29.8873937 66.6390905,29.3464253 69.3446063,29.3464253 C73.8084379,29.3464253 76.0066695,31.2738358 76.0066695,34.8921937 L76.0066695,46.3926568 L73.5719747,46.3926568 Z" id="Fill-3" fill="#001B72"></path>
+                        <mask id="mask-2" fill="white">
+                            <use xlink:href="#path-1"></use>
+                        </mask>
+                        <g id="Clip-6"></g>
+                        <path d="M81.0785684,46.39232 L83.5139368,46.39232 L83.5139368,29.3130779 L81.0785684,29.3130779 L81.0785684,46.39232 Z M80.9431579,25.0183411 L83.6823579,25.0183411 L83.6823579,22.2784674 L80.9431579,22.2784674 L80.9431579,25.0183411 Z" id="Fill-5" fill="#001B72" mask="url(#mask-2)"></path>
+                        <path d="M92.9489516,46.3924547 C90.0406568,46.3924547 88.7215832,44.4980547 88.7215832,41.96096 L88.7215832,22.3122863 L91.1569516,22.3122863 L91.1569516,41.8605811 C91.1569516,43.48416 91.69792,44.2952758 93.3881937,44.2952758 L94.7079411,44.2952758 L94.7079411,46.3924547 L92.9489516,46.3924547 Z" id="Fill-7" fill="#001B72" mask="url(#mask-2)"></path>
+                        <path d="M115.134114,35.2654821 L108.572429,35.2654821 L108.572429,44.0920926 L115.134114,44.0920926 C118.111124,44.0920926 119.970493,42.3674611 119.970493,39.6612716 C119.970493,36.9564295 118.111124,35.2654821 115.134114,35.2654821 M114.863293,24.61184 L108.572429,24.61184 L108.572429,32.9648505 L114.863293,32.9648505 C117.535798,32.9648505 119.598619,31.6464505 119.598619,28.7711663 C119.598619,25.8965558 117.535798,24.61184 114.863293,24.61184 M115.370577,46.3927242 L106.002998,46.3927242 L106.002998,22.3125558 L115.066072,22.3125558 C119.260429,22.3125558 122.168724,24.7135663 122.168724,28.7381558 C122.168724,31.2739032 120.646872,33.2700295 118.617061,34.0137768 C120.917019,34.8592505 122.541272,36.8547032 122.541272,39.7293137 C122.541272,44.0920926 119.632303,46.3927242 115.370577,46.3927242" id="Fill-8" fill="#001B72" mask="url(#mask-2)"></path>
+                        <path d="M136.744354,38.5121684 L132.077069,38.5121684 C129.574333,38.5121684 128.356312,39.5267368 128.356312,41.4548211 C128.356312,43.3829053 129.540648,44.2957474 132.178796,44.2957474 C133.599596,44.2957474 134.849954,44.1946947 135.89888,43.1801263 C136.473533,42.6384842 136.744354,41.6912842 136.744354,40.3048421 L136.744354,38.5121684 Z M136.744354,46.3511579 L136.744354,44.6002526 C135.391596,45.9523368 134.174248,46.3922526 131.942333,46.3922526 C129.642375,46.3922526 128.288943,45.9523368 127.241364,44.8704 C126.429575,44.0592842 125.989659,42.8075789 125.989659,41.4878316 C125.989659,38.5808842 128.018122,36.6864842 131.73888,36.6864842 L136.744354,36.6864842 L136.744354,35.0965895 C136.744354,32.6618947 135.527006,31.4438737 132.482627,31.4438737 C130.352438,31.4438737 129.270501,31.9511579 128.288943,33.3382737 L126.632354,31.8164211 C128.120522,29.8883368 129.811469,29.3473684 132.516985,29.3473684 C136.981491,29.3473684 139.179048,31.2747789 139.179048,34.8931368 L139.179048,46.3511579 L136.744354,46.3511579 Z" id="Fill-9" fill="#001B72" mask="url(#mask-2)"></path>
+                        <path d="M148.411419,46.3924547 C145.503124,46.3924547 144.183377,44.4980547 144.183377,41.96096 L144.183377,22.3122863 L146.618745,22.3122863 L146.618745,41.8605811 C146.618745,43.48416 147.159714,44.2952758 148.850661,44.2952758 L150.169735,44.2952758 L150.169735,46.3924547 L148.411419,46.3924547 Z" id="Fill-10" fill="#001B72" mask="url(#mask-2)"></path>
+                        <path d="M158.117322,46.3924547 C155.276396,46.3924547 153.856269,44.3970021 153.856269,41.9279495 L153.856269,31.7135495 L151.759091,31.7135495 L151.759091,29.8541811 L153.856269,29.8541811 L153.856269,24.6459284 L156.290964,24.6459284 L156.290964,29.8541811 L159.841954,29.8541811 L159.841954,31.7135495 L156.290964,31.7135495 L156.290964,41.8605811 C156.290964,43.3824337 157.001027,44.2952758 158.556564,44.2952758 L159.841954,44.2952758 L159.841954,46.3924547 L158.117322,46.3924547 Z" id="Fill-11" fill="#001B72" mask="url(#mask-2)"></path>
+                        <path d="M163.831916,46.39232 L166.265937,46.39232 L166.265937,29.3130779 L163.831916,29.3130779 L163.831916,46.39232 Z M163.695832,25.0183411 L166.435032,25.0183411 L166.435032,22.2784674 L163.695832,22.2784674 L163.695832,25.0183411 Z" id="Fill-12" fill="#001B72" mask="url(#mask-2)"></path>
+                        <path d="M178.002189,46.3924547 C173.808505,46.3924547 170.628716,43.5515284 170.628716,37.8703495 C170.628716,32.1878232 173.808505,29.3475705 178.002189,29.3475705 C180.302147,29.3475705 181.755284,29.9559074 183.479916,31.8166232 L181.823326,33.37216 C180.572295,31.9857179 179.591411,31.5114442 178.002189,31.5114442 C176.378611,31.5114442 175.025853,32.1534653 174.146695,33.4058442 C173.368589,34.4884547 173.063411,35.7738442 173.063411,37.8703495 C173.063411,39.9661811 173.368589,41.2529179 174.146695,42.3348547 C175.025853,43.5852126 176.378611,44.2279074 178.002189,44.2279074 C179.591411,44.2279074 180.572295,43.7206232 181.823326,42.3348547 L183.479916,43.9234021 C181.755284,45.7834442 180.302147,46.3924547 178.002189,46.3924547" id="Fill-13" fill="#001B72" mask="url(#mask-2)"></path>
+                        <path d="M196.29824,38.46912 L191.630282,38.46912 C189.128219,38.46912 187.910198,39.4836884 187.910198,41.4117726 C187.910198,43.3398568 189.093861,44.2526989 191.732682,44.2526989 C193.152135,44.2526989 194.40384,44.1516463 195.452766,43.1370779 C196.028093,42.5954358 196.29824,41.6482358 196.29824,40.2617937 L196.29824,38.46912 Z M196.29824,46.39232 L196.29824,44.5572042 C194.944808,45.9092884 193.727461,46.3492042 191.495545,46.3492042 C189.195587,46.3492042 187.843503,45.9092884 186.794577,44.8273516 C185.982787,44.0162358 185.543545,42.7645305 185.543545,41.4447832 C185.543545,38.5378358 187.572682,36.6434358 191.292093,36.6434358 L196.29824,36.6434358 L196.29824,35.0535411 C196.29824,32.6188463 195.080219,31.4008253 192.036514,31.4008253 C189.906324,31.4008253 188.82304,31.9081095 187.843503,33.2952253 L186.185566,31.7733726 C187.673735,29.8452884 189.364682,29.30432 192.070872,29.30432 C196.534703,29.30432 198.732935,31.2317305 198.732935,34.8500884 L198.732935,46.39232 L196.29824,46.39232 Z" id="Fill-14" fill="#001B72" mask="url(#mask-2)"></path>
+                        <path d="M23.0575158,32.3381895 L23.0784,38.9005474 C23.2474947,43.1824842 20.5702737,43.8164211 18.3518316,43.8164211 L15.872,43.8588632 L15.3997474,46.3312842 L18.9783579,46.3521684 C23.5304421,46.3164632 25.6148211,43.4613895 25.6148211,38.9005474 L25.6148211,32.3806316 L23.0575158,32.3381895 Z" id="Fill-15" fill="#001B72" mask="url(#mask-2)"></path>
+                        <path d="M30.1535663,25.3437305 L30.1535663,25.8786358 C30.1535663,28.6690358 27.8839242,30.9386779 25.0941979,30.9386779 L25.0935242,30.9386779 L25.0921768,30.9386779 L23.6430821,30.9353095 C20.8547032,30.9353095 18.5850611,28.6656674 18.5850611,25.8752674 L18.5850611,25.3484463 L18.5850611,24.8169095 C18.5850611,22.0271832 20.8547032,19.7568674 23.6444295,19.7568674 L25.0921768,19.7534989 C27.8839242,19.7534989 30.1535663,22.0238147 30.1535663,24.8135411 L30.1535663,25.3437305 Z M29.3404295,18.7705937 C29.2771032,18.7268042 29.2063663,18.6789726 29.1342821,18.6324884 L29.0803874,18.5981305 L29.0318821,18.5671411 C27.7882611,17.7870147 26.3378189,17.3720253 24.8442611,17.3720253 L24.7741979,17.3726989 L23.9745347,17.3760674 L23.8943663,17.3753937 C22.4008084,17.3753937 20.9503663,17.7903832 19.7006821,18.5752253 L19.65824,18.6014989 L19.6110821,18.6318147 C19.5329347,18.6823411 19.4615242,18.7301726 19.3914611,18.7793516 C17.4148716,20.1893726 16.2305347,22.4798989 16.2305347,24.9017937 L16.2305347,25.3437305 L16.2305347,25.7903832 C16.2305347,28.2122779 17.4148716,30.5034779 19.3988716,31.9182147 C19.4615242,31.9620042 19.5329347,32.0098358 19.6043453,32.05632 L19.65824,32.0906779 L19.7067453,32.1216674 C20.9503663,32.9017937 22.4008084,33.3167832 23.8943663,33.3167832 L23.9644295,33.3167832 L24.7708295,33.3201516 L24.8442611,33.3201516 C26.3378189,33.3201516 27.7882611,32.9058358 29.0386189,32.1209937 L29.0803874,32.0940463 L29.1275453,32.0644042 C29.2063663,32.0132042 29.2771032,31.9653726 29.3471663,31.9168674 C31.3237558,30.5068463 32.5080926,28.2156463 32.5080926,25.7937516 L32.5080926,25.3484463 L32.5080926,24.8984253 C32.5080926,22.4765305 31.3237558,20.1860042 29.3404295,18.7705937 L29.3404295,18.7705937 Z" id="Fill-16" fill="#001B72" mask="url(#mask-2)"></path>
+                        <path d="M13.9229642,42.5884968 L13.9229642,43.1234021 C13.9229642,45.9138021 11.6533221,48.1834442 8.86359579,48.1834442 L8.86292211,48.1834442 L8.86157474,48.1834442 L7.41248,48.1800758 C4.62410105,48.1800758 2.35445895,45.9104337 2.35445895,43.1200337 L2.35445895,42.5932126 L2.35445895,42.0616758 C2.35445895,39.2719495 4.62410105,37.0016337 7.41382737,37.0016337 L8.86157474,36.9982653 C11.6533221,36.9982653 13.9229642,39.2685811 13.9229642,42.0583074 L13.9229642,42.5884968 Z M13.1098274,36.01536 C13.0465011,35.9715705 12.9757642,35.9237389 12.90368,35.8772547 L12.8497853,35.8428968 L12.80128,35.8119074 C11.5576589,35.0317811 10.1072168,34.6167916 8.61365895,34.6167916 L8.54359579,34.6174653 L7.74393263,34.6208337 L7.66376421,34.62016 C6.17020632,34.62016 4.71976421,35.0351495 3.47008,35.8199916 L3.42763789,35.8462653 L3.38048,35.8765811 C3.30233263,35.9271074 3.23092211,35.9749389 3.16085895,36.0241179 C1.18426947,37.4341389 -6.73684211e-05,39.7246653 -6.73684211e-05,42.14656 L-6.73684211e-05,42.5884968 L-6.73684211e-05,43.0351495 C-6.73684211e-05,45.4570442 1.18426947,47.7482442 3.16826947,49.1629811 C3.23092211,49.2067705 3.30233263,49.2546021 3.37374316,49.3010863 L3.42763789,49.3354442 L3.47614316,49.3664337 C4.71976421,50.14656 6.17020632,50.5615495 7.66376421,50.5615495 L7.73382737,50.5615495 L8.54022737,50.5649179 L8.61365895,50.5649179 C10.1072168,50.5649179 11.5576589,50.1506021 12.8080168,49.36576 L12.8497853,49.3388126 L12.8969432,49.3091705 C12.9757642,49.2579705 13.0465011,49.2101389 13.1165642,49.1616337 C15.0931537,47.7516126 16.2774905,45.4604126 16.2774905,43.0385179 L16.2774905,42.5932126 L16.2774905,42.1431916 C16.2774905,39.7212968 15.0931537,37.4307705 13.1098274,36.01536 L13.1098274,36.01536 Z" id="Fill-17" fill="#001B72" mask="url(#mask-2)"></path>
+                        <path d="M52.6397305,7.97170526 L52.6397305,8.50661053 C52.6397305,11.2970105 50.3700884,13.5666526 47.5803621,13.5666526 L47.5796884,13.5666526 L47.5783411,13.5666526 L46.1292463,13.5632842 C43.3408674,13.5632842 41.0712253,11.2936421 41.0712253,8.50324211 L41.0712253,7.97642105 L41.0712253,7.44488421 C41.0712253,4.65515789 43.3408674,2.38484211 46.1305937,2.38484211 L47.5783411,2.38147368 C50.3700884,2.38147368 52.6397305,4.65178947 52.6397305,7.44151579 L52.6397305,7.97170526 Z M51.8265937,1.39856842 C51.7632674,1.35477895 51.6925305,1.30694737 51.6204463,1.26046316 L51.5665516,1.22610526 L51.5180463,1.19511579 C50.2744253,0.414989474 48.8239832,0 47.3304253,0 L47.2603621,0.000673684211 L46.4606989,0.00404210526 L46.3805305,0.00336842105 C44.8869726,0.00336842105 43.4365305,0.418357895 42.1868463,1.2032 L42.1444042,1.22947368 L42.0972463,1.25978947 C42.0190989,1.31031579 41.9476884,1.35814737 41.8776253,1.40732632 C39.9010358,2.81734737 38.7166989,5.10787368 38.7166989,7.52976842 L38.7166989,7.97170526 L38.7166989,8.41835789 C38.7166989,10.8402526 39.9010358,13.1314526 41.8850358,14.5461895 C41.9476884,14.5899789 42.0190989,14.6378105 42.0905095,14.6842947 L42.1444042,14.7186526 L42.1929095,14.7496421 C43.4365305,15.5297684 44.8869726,15.9447579 46.3805305,15.9447579 L46.4505937,15.9447579 L47.2569937,15.9481263 L47.3304253,15.9481263 C48.8239832,15.9481263 50.2744253,15.5338105 51.5247832,14.7489684 L51.5665516,14.7220211 L51.6137095,14.6923789 C51.6925305,14.6411789 51.7632674,14.5933474 51.8333305,14.5448421 C53.80992,13.1348211 54.9942568,10.8436211 54.9942568,8.42172632 L54.9942568,7.97642105 L54.9942568,7.5264 C54.9942568,5.10450526 53.80992,2.81397895 51.8265937,1.39856842 L51.8265937,1.39856842 Z" id="Fill-18" fill="#001B72" mask="url(#mask-2)"></path>
+                        <path d="M32.4269137,26.7233684 L32.4221979,14.7122526 C32.2531032,10.4303158 34.8366821,9.79637895 37.0551242,9.79637895 L39.5275453,9.79637895 L39.6124295,7.26063158 L36.52224,7.26063158 C31.9708295,7.29633684 29.8864505,10.1514105 29.8864505,14.7122526 L29.8837558,22.8186947 L32.4269137,26.7233684 Z" id="Fill-19" fill="#001B72" mask="url(#mask-2)"></path>
+                        <path d="M23.8844632,28.7016421 C22.2319158,28.7016421 20.8872421,27.3562947 20.8872421,25.7037474 L20.8872421,24.9889684 C20.8872421,23.3350737 22.2319158,21.9904 23.8844632,21.9904 L24.8586105,21.9904 C26.3912421,21.9904 27.6685474,23.1349895 27.8376421,24.6554947 L27.8329263,25.8533053 L27.8517895,25.8533053 C27.7743158,27.4371368 26.4613053,28.7016421 24.8586105,28.7016421 L23.8844632,28.7016421 Z" id="Fill-20" fill="#9C1B34" mask="url(#mask-2)"></path>
+                        <path d="M46.3690105,11.3296168 C44.7157895,11.3296168 43.3717895,9.98561684 43.3717895,8.33239579 L43.3717895,7.61626947 C43.3717895,5.96439579 44.7157895,4.61837474 46.3690105,4.61837474 L47.3424842,4.61837474 C48.9950316,4.61837474 50.3403789,5.96439579 50.3403789,7.61626947 L50.3403789,8.33239579 C50.3403789,9.98561684 48.9950316,11.3296168 47.3424842,11.3296168 L46.3690105,11.3296168 Z" id="Fill-21" fill="#128FFF" mask="url(#mask-2)"></path>
+                        <path d="M7.65258105,45.9473516 C5.99936,45.9473516 4.65468632,44.6006568 4.65468632,42.9481095 L4.65468632,42.2319832 C4.65468632,40.5794358 5.99936,39.2347621 7.65258105,39.2347621 L8.62538105,39.2347621 C10.2792758,39.2347621 11.6232758,40.5794358 11.6232758,42.2319832 L11.6232758,42.9481095 C11.6232758,44.6006568 10.2792758,45.9473516 8.62538105,45.9473516 L7.65258105,45.9473516 Z" id="Fill-22" fill="#006A44" mask="url(#mask-2)"></path>
+                        <polygon id="Fill-23" fill="#001B72" mask="url(#mask-2)" points="43.0759074 53.1457347 43.6606653 53.1457347 43.6606653 60.8688505 47.3147284 60.8688505 47.3147284 61.3565979 43.0759074 61.3565979"></polygon>
+                        <path d="M48.8367497,61.3561937 L49.4603129,61.3561937 L49.4603129,55.5086147 L48.8367497,55.5086147 L48.8367497,61.3561937 Z M49.1219508,54.3397726 C48.8367497,54.3397726 48.6413474,54.1080253 48.6413474,53.8405726 C48.6413474,53.5724463 48.8626117,53.3285726 49.1478129,53.3285726 C49.4337324,53.3285726 49.6413474,53.56032 49.6413474,53.8405726 C49.6413474,54.1080253 49.4466635,54.3397726 49.1348819,54.3397726 L49.1219508,54.3397726 Z" id="Fill-24" fill="#001B72" mask="url(#mask-2)"></path>
+                        <path d="M51.6742737,56.9102147 C51.6742737,56.3739621 51.6621474,55.9717726 51.6250947,55.5089516 L52.1734737,55.5089516 L52.2098526,56.5572042 L52.2347789,56.5572042 C52.5514105,55.8990147 53.2944842,55.3755621 54.2443789,55.3755621 C54.8048842,55.3755621 56.2910316,55.6558147 56.2910316,57.8486568 L56.2910316,61.3565305 L55.7062737,61.3565305 L55.7062737,57.8971621 C55.7062737,56.8246568 55.2919579,55.8619621 54.0860632,55.8619621 C53.2702316,55.8619621 52.5635368,56.4473937 52.3317895,57.21472 C52.2954105,57.3481095 52.2590316,57.5434779 52.2590316,57.7260463 L52.2590316,61.3565305 L51.6742737,61.3565305 L51.6742737,56.9102147 Z" id="Fill-25" fill="#001B72" mask="url(#mask-2)"></path>
+                        <path d="M59.0666779,58.3233347 L59.0909305,58.3233347 C59.23712,58.1407663 59.4688674,57.87264 59.6514358,57.6772716 L61.7223411,55.5086821 L62.4290358,55.5086821 L60.0657516,57.9332716 L62.7577937,61.3562611 L62.0510989,61.3562611 L59.6635621,58.2862821 L59.0666779,58.9202189 L59.0666779,61.3562611 L58.48192,61.3562611 L58.48192,52.6953768 L59.0666779,52.6953768 L59.0666779,58.3233347 Z" id="Fill-26" fill="#001B72" mask="url(#mask-2)"></path>
+                        <path d="M64.2303892,61.3561937 L64.8539524,61.3561937 L64.8539524,55.5086147 L64.2303892,55.5086147 L64.2303892,61.3561937 Z M64.5163087,54.3397726 C64.2303892,54.3397726 64.0357053,54.1080253 64.0357053,53.8405726 C64.0357053,53.5724463 64.2562512,53.3285726 64.5421708,53.3285726 C64.8280903,53.3285726 65.0357053,53.56032 65.0357053,53.8405726 C65.0357053,54.1080253 64.8410214,54.3397726 64.5292397,54.3397726 L64.5163087,54.3397726 Z" id="Fill-27" fill="#001B72" mask="url(#mask-2)"></path>
+                        <path d="M67.0561684,56.9102147 C67.0561684,56.3739621 67.0433684,55.9717726 67.0069895,55.5089516 L67.5553684,55.5089516 L67.5917474,56.5572042 L67.6166737,56.5572042 C67.9333053,55.8990147 68.6763789,55.3755621 69.6262737,55.3755621 C70.1867789,55.3755621 71.6729263,55.6558147 71.6729263,57.8486568 L71.6729263,61.3565305 L71.0881684,61.3565305 L71.0881684,57.8971621 C71.0881684,56.8246568 70.6738526,55.8619621 69.4679579,55.8619621 C68.6521263,55.8619621 67.9454316,56.4473937 67.7136842,57.21472 C67.6773053,57.3481095 67.6409263,57.5434779 67.6409263,57.7260463 L67.6409263,61.3565305 L67.0561684,61.3565305 L67.0561684,56.9102147 Z" id="Fill-28" fill="#001B72" mask="url(#mask-2)"></path>
+                        <path d="M77.9689768,57.7628295 C77.9689768,57.5438821 77.9568505,57.36064 77.8962189,57.1901979 C77.6523453,56.4956295 77.0433347,55.8623663 76.08064,55.8623663 C74.8383663,55.8623663 73.9854821,56.8735663 73.9854821,58.4210189 C73.9854821,59.7360505 74.6800505,60.8685137 76.0563874,60.8685137 C76.83584,60.8685137 77.5667874,60.3821137 77.8712926,59.5534821 C77.9325979,59.3581137 77.9689768,59.1391663 77.9689768,58.9316716 L77.9689768,57.7628295 Z M78.5537347,60.5033768 C78.5537347,62.0016505 78.2371032,62.7453979 77.7493558,63.2075453 C77.2137768,63.7195453 76.4221979,63.9021137 75.7640084,63.9021137 C75.0943663,63.9021137 74.3512926,63.7316716 73.9005979,63.3907874 L74.1074189,62.9279663 C74.5217347,63.1954189 75.0943663,63.41504 75.8495663,63.41504 C77.0797137,63.41504 77.9689768,62.7811032 77.9689768,61.0517558 L77.9689768,60.2231242 L77.9447242,60.2231242 C77.6402189,60.8200084 76.9577768,61.3562611 75.9101979,61.3562611 C74.4361768,61.3562611 73.4007242,60.0776084 73.4007242,58.4809768 C73.4007242,56.4471242 74.7406821,55.3752926 76.0321347,55.3752926 C77.1895242,55.3752926 77.7614821,56.0085558 78.0053558,56.4956295 L78.0296084,56.4956295 L78.0666611,55.5086821 L78.60224,55.5086821 C78.5658611,55.9479242 78.5537347,56.4107453 78.5537347,57.0190821 L78.5537347,60.5033768 Z" id="Fill-29" fill="#001B72" mask="url(#mask-2)"></path>
+                        <path d="M83.7897432,56.9102147 C83.7897432,56.3739621 83.7769432,55.9717726 83.7405642,55.5089516 L84.2889432,55.5089516 L84.3253221,56.5572042 L84.3502484,56.5572042 C84.66688,55.8990147 85.4099537,55.3755621 86.3598484,55.3755621 C86.9203537,55.3755621 88.4065011,55.6558147 88.4065011,57.8486568 L88.4065011,61.3565305 L87.8217432,61.3565305 L87.8217432,57.8971621 C87.8217432,56.8246568 87.4074274,55.8619621 86.2015326,55.8619621 C85.3857011,55.8619621 84.6790063,56.4473937 84.4472589,57.21472 C84.41088,57.3481095 84.3745011,57.5434779 84.3745011,57.7260463 L84.3745011,61.3565305 L83.7897432,61.3565305 L83.7897432,56.9102147 Z" id="Fill-30" fill="#001B72" mask="url(#mask-2)"></path>
+                        <path d="M93.6673684,58.2253137 C92.3887158,58.1889347 90.7072,58.3836295 90.7072,59.7842189 C90.7072,60.6256505 91.2677053,61.0029137 91.8767158,61.0029137 C92.8515368,61.0029137 93.4120421,60.4060295 93.6067368,59.8340716 C93.6552421,59.7114611 93.6673684,59.5780716 93.6673684,59.4803874 L93.6673684,58.2253137 Z M94.2521263,59.9674611 C94.2521263,60.4302821 94.2642526,60.9059032 94.3376842,61.3559242 L93.8014316,61.3559242 L93.7158737,60.5151663 L93.6916211,60.5151663 C93.3999158,60.9665347 92.7538526,61.4906611 91.8160842,61.4906611 C90.6344421,61.4906611 90.0981895,60.6620295 90.0981895,59.8825768 C90.0981895,58.5298189 91.2798316,57.7139874 93.6673684,57.73824 L93.6673684,57.5799242 C93.6673684,57.0072926 93.5575579,55.8505768 92.1690947,55.8620295 C91.6577684,55.8620295 91.1215158,55.9960926 90.6950737,56.3012716 L90.5125053,55.8748295 C91.0487579,55.5211453 91.7062737,55.3756295 92.2304,55.3756295 C93.9233684,55.3756295 94.2521263,56.6414821 94.2521263,57.6776084 L94.2521263,59.9674611 Z" id="Fill-31" fill="#001B72" mask="url(#mask-2)"></path>
+                        <path d="M97.2475958,54.2181053 L97.2475958,55.5088842 L98.9163116,55.5088842 L98.9163116,55.9845053 L97.2475958,55.9845053 L97.2475958,59.7847579 C97.2475958,60.5278316 97.4786695,60.9913263 98.10048,60.9913263 C98.4049853,60.9913263 98.6239326,60.9542737 98.7701221,60.9057684 L98.8435537,61.3436632 C98.6481853,61.4177684 98.3807326,61.4777263 98.0270484,61.4777263 C97.6006063,61.4777263 97.2475958,61.3436632 97.0279747,61.0762105 C96.7598484,60.7717053 96.6628379,60.2718316 96.6628379,59.6756211 L96.6628379,55.9845053 L95.6758905,55.9845053 L95.6758905,55.5088842 L96.6628379,55.5088842 L96.6628379,54.4370526 L97.2475958,54.2181053 Z" id="Fill-32" fill="#001B72" mask="url(#mask-2)"></path>
+                        <path d="M100.523823,61.3561937 L101.147387,61.3561937 L101.147387,55.5086147 L100.523823,55.5086147 L100.523823,61.3561937 Z M100.809025,54.3397726 C100.523823,54.3397726 100.328421,54.1080253 100.328421,53.8405726 C100.328421,53.5724463 100.549685,53.3285726 100.834887,53.3285726 C101.120806,53.3285726 101.328421,53.56032 101.328421,53.8405726 C101.328421,54.1080253 101.133737,54.3397726 100.821956,54.3397726 L100.809025,54.3397726 Z" id="Fill-33" fill="#001B72" mask="url(#mask-2)"></path>
+                        <path d="M105.577903,61.0029811 C106.795924,61.0029811 107.758619,59.9068968 107.758619,58.4079495 C107.758619,57.3367916 107.161735,55.8620968 105.614282,55.8620968 C104.116008,55.8620968 103.446366,57.1906021 103.446366,58.4450021 C103.446366,59.9068968 104.372008,61.0029811 105.565777,61.0029811 L105.577903,61.0029811 Z M105.541524,61.4907284 C104.031124,61.4907284 102.861608,60.3090863 102.861608,58.4813811 C102.861608,56.4839074 104.177314,55.3750232 105.626408,55.3750232 C107.247293,55.3750232 108.342703,56.5930442 108.342703,58.3836968 C108.342703,60.5522863 106.845103,61.4907284 105.553651,61.4907284 L105.541524,61.4907284 Z" id="Fill-34" fill="#001B72" mask="url(#mask-2)"></path>
+                        <path d="M110.132817,56.9102147 C110.132817,56.3739621 110.120691,55.9717726 110.083638,55.5089516 L110.632017,55.5089516 L110.668396,56.5572042 L110.693322,56.5572042 C111.009954,55.8990147 111.753027,55.3755621 112.702922,55.3755621 C113.263427,55.3755621 114.749575,55.6558147 114.749575,57.8486568 L114.749575,61.3565305 L114.164817,61.3565305 L114.164817,57.8971621 C114.164817,56.8246568 113.750501,55.8619621 112.544606,55.8619621 C111.728775,55.8619621 111.02208,56.4473937 110.790333,57.21472 C110.753954,57.3481095 110.717575,57.5434779 110.717575,57.7260463 L110.717575,61.3565305 L110.132817,61.3565305 L110.132817,56.9102147 Z" id="Fill-35" fill="#001B72" mask="url(#mask-2)"></path>
+                        <path d="M116.70912,60.5891368 C117.025752,60.7838316 117.500699,60.9913263 118.024825,60.9913263 C118.950467,60.9913263 119.389036,60.4907789 119.389036,59.8824421 C119.389036,59.2363789 118.998973,58.8954947 118.158888,58.5539368 C117.196194,58.1888 116.672741,57.6653474 116.672741,56.9586526 C116.672741,56.1064421 117.342383,55.3754947 118.47552,55.3754947 C119.011099,55.3754947 119.47392,55.5338105 119.766973,55.7406316 L119.547352,56.2155789 C119.340531,56.0693895 118.962594,55.8618947 118.377836,55.8618947 C117.634762,55.8618947 117.244699,56.3375158 117.244699,56.8730947 C117.244699,57.4827789 117.659015,57.7387789 118.450594,58.0675368 C119.401162,58.4448 119.961667,58.9197474 119.961667,59.8096842 C119.961667,60.8080842 119.181541,61.4777263 117.987773,61.4777263 C117.427941,61.4777263 116.891688,61.3194105 116.501625,61.0762105 L116.70912,60.5891368 Z" id="Fill-36" fill="#001B72" mask="url(#mask-2)"></path>
+                        <path d="M120.995975,62.8911158 C121.190669,62.3791158 121.519427,61.0640842 121.629238,60.3088842 L122.396564,60.1862737 C122.177617,61.1004632 121.653491,62.4889263 121.458796,62.8298105 L120.995975,62.8911158 Z" id="Fill-37" fill="#001B72" mask="url(#mask-2)"></path>
+                        <path d="M127.633448,59.0542821 C127.633448,59.2119242 127.645575,59.3709137 127.681954,59.5171032 C127.925827,60.4178189 128.70528,61.0032505 129.606669,61.0032505 C130.946627,61.0032505 131.713954,59.9186189 131.713954,58.3597137 C131.713954,57.0440084 130.98368,55.8623663 129.655175,55.8623663 C128.802964,55.8623663 127.974333,56.4471242 127.718333,57.4098189 C127.681954,57.5681347 127.633448,57.7500295 127.633448,57.9090189 L127.633448,59.0542821 Z M127.048691,57.3727663 C127.048691,56.6418189 127.036564,56.0691874 127.000185,55.5086821 L127.560691,55.5086821 L127.597069,56.6175663 L127.621322,56.6175663 C128.047764,55.85024 128.766585,55.3752926 129.789912,55.3752926 C131.287512,55.3752926 132.298712,56.6175663 132.298712,58.3354611 C132.298712,60.4178189 131.056438,61.4903242 129.643048,61.4903242 C128.802964,61.4903242 128.059891,61.1130611 127.657701,60.4063663 L127.633448,60.4063663 L127.633448,63.7680505 L127.048691,63.7680505 L127.048691,57.3727663 Z" id="Fill-38" fill="#001B72" mask="url(#mask-2)"></path>
+                        <path d="M137.900935,57.9088842 C137.913061,57.0930526 137.572177,55.8622316 136.159461,55.8622316 C134.868008,55.8622316 134.319629,57.0074947 134.209819,57.9088842 L137.900935,57.9088842 Z M134.17344,58.3717053 C134.17344,60.2357895 135.196766,60.9788632 136.402661,60.9788632 C137.255545,60.9788632 137.694114,60.8084211 138.022872,60.6494316 L138.169061,61.1001263 C137.94944,61.2220632 137.353229,61.4780632 136.329229,61.4780632 C134.648387,61.4780632 133.600808,60.2600421 133.600808,58.5421474 C133.600808,56.5931789 134.721819,55.3751579 136.232219,55.3751579 C138.144808,55.3751579 138.509945,57.1779368 138.509945,58.0186947 C138.509945,58.1763368 138.509945,58.2618947 138.485693,58.3717053 L134.17344,58.3717053 Z" id="Fill-39" fill="#001B72" mask="url(#mask-2)"></path>
+                        <path d="M142.528202,61.0029811 C143.746223,61.0029811 144.708918,59.9068968 144.708918,58.4079495 C144.708918,57.3367916 144.112034,55.8620968 142.564581,55.8620968 C141.066981,55.8620968 140.396665,57.1906021 140.396665,58.4450021 C140.396665,59.9068968 141.322307,61.0029811 142.516076,61.0029811 L142.528202,61.0029811 Z M142.491823,61.4907284 C140.981423,61.4907284 139.811907,60.3090863 139.811907,58.4813811 C139.811907,56.4839074 141.127613,55.3750232 142.576707,55.3750232 C144.197592,55.3750232 145.293002,56.5930442 145.293002,58.3836968 C145.293002,60.5522863 143.794728,61.4907284 142.503949,61.4907284 L142.491823,61.4907284 Z" id="Fill-40" fill="#001B72" mask="url(#mask-2)"></path>
+                        <path d="M147.655478,59.0542821 C147.655478,59.2119242 147.667604,59.3709137 147.703983,59.5171032 C147.947857,60.4178189 148.727309,61.0032505 149.628699,61.0032505 C150.968657,61.0032505 151.735983,59.9186189 151.735983,58.3597137 C151.735983,57.0440084 151.005709,55.8623663 149.677204,55.8623663 C148.824994,55.8623663 147.996362,56.4471242 147.740362,57.4098189 C147.703983,57.5681347 147.655478,57.7500295 147.655478,57.9090189 L147.655478,59.0542821 Z M147.07072,57.3727663 C147.07072,56.6418189 147.058594,56.0691874 147.022215,55.5086821 L147.58272,55.5086821 L147.619099,56.6175663 L147.643352,56.6175663 C148.069794,55.85024 148.788615,55.3752926 149.811941,55.3752926 C151.309541,55.3752926 152.320741,56.6175663 152.320741,58.3354611 C152.320741,60.4178189 151.078467,61.4903242 149.665078,61.4903242 C148.824994,61.4903242 148.08192,61.1130611 147.679731,60.4063663 L147.655478,60.4063663 L147.655478,63.7680505 L147.07072,63.7680505 L147.07072,57.3727663 Z" id="Fill-41" fill="#001B72" mask="url(#mask-2)"></path>
+                        <polygon id="Fill-42" fill="#001B72" mask="url(#mask-2)" points="154.109979 61.3561937 154.694737 61.3561937 154.694737 52.6953095 154.109979 52.6953095"></polygon>
+                        <path d="M160.808825,57.9088842 C160.820952,57.0930526 160.480067,55.8622316 159.067352,55.8622316 C157.775899,55.8622316 157.22752,57.0074947 157.117709,57.9088842 L160.808825,57.9088842 Z M157.081331,58.3717053 C157.081331,60.2357895 158.104657,60.9788632 159.310552,60.9788632 C160.163436,60.9788632 160.602004,60.8084211 160.930762,60.6494316 L161.076952,61.1001263 C160.857331,61.2220632 160.26112,61.4780632 159.23712,61.4780632 C157.556278,61.4780632 156.508699,60.2600421 156.508699,58.5421474 C156.508699,56.5931789 157.629709,55.3751579 159.140109,55.3751579 C161.052699,55.3751579 161.417836,57.1779368 161.417836,58.0186947 C161.417836,58.1763368 161.417836,58.2618947 161.393583,58.3717053 L157.081331,58.3717053 Z" id="Fill-43" fill="#001B72" mask="url(#mask-2)"></path>
+                        <path d="M162.415697,62.8911158 C162.610392,62.3791158 162.939149,61.0640842 163.04896,60.3088842 L163.816286,60.1862737 C163.597339,61.1004632 163.073213,62.4889263 162.878518,62.8298105 L162.415697,62.8911158 Z" id="Fill-44" fill="#001B72" mask="url(#mask-2)"></path>
+                        <path d="M169.041044,59.0542821 C169.041044,59.2119242 169.053171,59.3709137 169.089549,59.5171032 C169.333423,60.4178189 170.112876,61.0032505 171.014265,61.0032505 C172.354223,61.0032505 173.121549,59.9186189 173.121549,58.3597137 C173.121549,57.0440084 172.391276,55.8623663 171.062771,55.8623663 C170.21056,55.8623663 169.381928,56.4471242 169.125928,57.4098189 C169.089549,57.5681347 169.041044,57.7500295 169.041044,57.9090189 L169.041044,59.0542821 Z M168.456286,57.3727663 C168.456286,56.6418189 168.44416,56.0691874 168.407781,55.5086821 L168.968286,55.5086821 L169.004665,56.6175663 L169.028918,56.6175663 C169.45536,55.85024 170.174181,55.3752926 171.197507,55.3752926 C172.695107,55.3752926 173.706307,56.6175663 173.706307,58.3354611 C173.706307,60.4178189 172.464034,61.4903242 171.050644,61.4903242 C170.21056,61.4903242 169.467486,61.1130611 169.065297,60.4063663 L169.041044,60.4063663 L169.041044,63.7680505 L168.456286,63.7680505 L168.456286,57.3727663 Z" id="Fill-45" fill="#001B72" mask="url(#mask-2)"></path>
+                        <polygon id="Fill-46" fill="#001B72" mask="url(#mask-2)" points="175.496084 61.3561937 176.080842 61.3561937 176.080842 52.6953095 175.496084 52.6953095"></polygon>
+                        <path d="M181.439394,58.2253137 C180.160741,58.1889347 178.479225,58.3836295 178.479225,59.7842189 C178.479225,60.6256505 179.039731,61.0029137 179.648741,61.0029137 C180.623562,61.0029137 181.184067,60.4060295 181.378762,59.8340716 C181.427267,59.7114611 181.439394,59.5780716 181.439394,59.4803874 L181.439394,58.2253137 Z M182.024152,59.9674611 C182.024152,60.4302821 182.036278,60.9059032 182.109709,61.3559242 L181.573457,61.3559242 L181.488573,60.5151663 L181.463646,60.5151663 C181.171941,60.9665347 180.525878,61.4906611 179.588109,61.4906611 C178.406467,61.4906611 177.870215,60.6620295 177.870215,59.8825768 C177.870215,58.5298189 179.051857,57.7139874 181.439394,57.73824 L181.439394,57.5799242 C181.439394,57.0072926 181.329583,55.8505768 179.94112,55.8620295 C179.429794,55.8620295 178.893541,55.9960926 178.467099,56.3012716 L178.284531,55.8748295 C178.820783,55.5211453 179.478299,55.3756295 180.002425,55.3756295 C181.695394,55.3756295 182.024152,56.6414821 182.024152,57.6776084 L182.024152,59.9674611 Z" id="Fill-47" fill="#001B72" mask="url(#mask-2)"></path>
+                        <path d="M188.247646,61.1003284 C187.991646,61.2222653 187.382636,61.4782653 186.529752,61.4782653 C184.848909,61.4782653 183.728573,60.2474442 183.728573,58.4938442 C183.728573,56.62976 184.995099,55.37536 186.737246,55.37536 C187.456067,55.37536 188.052278,55.5828547 188.271899,55.7404968 L188.065078,56.2154442 C187.784825,56.0450021 187.334131,55.87456 186.688741,55.87456 C185.117036,55.87456 184.313331,57.0683284 184.313331,58.4453389 C184.313331,59.9799916 185.275352,60.9783916 186.627436,60.9783916 C187.322004,60.9783916 187.772699,60.7836968 188.089331,60.6375074 L188.247646,61.1003284 Z" id="Fill-48" fill="#001B72" mask="url(#mask-2)"></path>
+                        <path d="M193.752522,57.9088842 C193.764648,57.0930526 193.423764,55.8622316 192.011048,55.8622316 C190.719596,55.8622316 190.171217,57.0074947 190.061406,57.9088842 L193.752522,57.9088842 Z M190.025027,58.3717053 C190.025027,60.2357895 191.048354,60.9788632 192.254248,60.9788632 C193.107133,60.9788632 193.545701,60.8084211 193.874459,60.6494316 L194.020648,61.1001263 C193.801027,61.2220632 193.204817,61.4780632 192.180817,61.4780632 C190.499975,61.4780632 189.452396,60.2600421 189.452396,58.5421474 C189.452396,56.5931789 190.573406,55.3751579 192.083806,55.3751579 C193.996396,55.3751579 194.361533,57.1779368 194.361533,58.0186947 C194.361533,58.1763368 194.361533,58.2618947 194.33728,58.3717053 L190.025027,58.3717053 Z" id="Fill-49" fill="#001B72" mask="url(#mask-2)"></path>
+                        <path d="M195.907166,60.5891368 C196.223798,60.7838316 196.698745,60.9913263 197.222872,60.9913263 C198.148514,60.9913263 198.587082,60.4907789 198.587082,59.8824421 C198.587082,59.2363789 198.197019,58.8954947 197.356935,58.5539368 C196.39424,58.1888 195.870787,57.6653474 195.870787,56.9586526 C195.870787,56.1064421 196.540429,55.3754947 197.673566,55.3754947 C198.209145,55.3754947 198.671966,55.5338105 198.965019,55.7406316 L198.745398,56.2155789 C198.538577,56.0693895 198.16064,55.8618947 197.575882,55.8618947 C196.832808,55.8618947 196.442745,56.3375158 196.442745,56.8730947 C196.442745,57.4827789 196.857061,57.7387789 197.64864,58.0675368 C198.599208,58.4448 199.159714,58.9197474 199.159714,59.8096842 C199.159714,60.8080842 198.379587,61.4777263 197.185819,61.4777263 C196.625987,61.4777263 196.089735,61.3194105 195.699672,61.0762105 L195.907166,60.5891368 Z" id="Fill-50" fill="#001B72" mask="url(#mask-2)"></path>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>            </a>
+
+            <div class="navigation">
+                                <ul>
+                                            <li>
+                            <a href="https://info.railbaltica.org/en/in-brief" class="gtm" data-gtm-event-category="mapHeader">
+                                In Brief
+                            </a>
+                        </li>
+                                                <li>
+                            <a href="https://info.railbaltica.org/en/interactive-map" class="gtm" data-gtm-event-category="mapHeader">
+                                Map
+                            </a>
+                        </li>
+                                                <li>
+                            <a href="https://info.railbaltica.org/en/infrastructure" class="gtm" data-gtm-event-category="mapHeader">
+                                Infrastructure
+                            </a>
+                        </li>
+                                                <li>
+                            <a href="https://info.railbaltica.org/en/high-speed-train" class="gtm" data-gtm-event-category="mapHeader">
+                                High-speed train
+                            </a>
+                        </li>
+                        
+                    <li>
+                        <a class="current gtm" data-open="languageSwitchMobile" data-gtm-event-category="mapHeader">
+                            EN
+
+                            <svg class="" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 284.929 284.929" style="enable-background:new 0 0 284.929 284.929;" xml:space="preserve">
+<g fill="currentColor">
+	<path d="M282.082,76.511l-14.274-14.273c-1.902-1.906-4.093-2.856-6.57-2.856c-2.471,0-4.661,0.95-6.563,2.856L142.466,174.441
+		L30.262,62.241c-1.903-1.906-4.093-2.856-6.567-2.856c-2.475,0-4.665,0.95-6.567,2.856L2.856,76.515C0.95,78.417,0,80.607,0,83.082
+		c0,2.473,0.953,4.663,2.856,6.565l133.043,133.046c1.902,1.903,4.093,2.854,6.567,2.854s4.661-0.951,6.562-2.854L282.082,89.647
+		c1.902-1.903,2.847-4.093,2.847-6.565C284.929,80.607,283.984,78.417,282.082,76.511z"></path>
+</g>
+</svg>                        </a>
+                    </li>
+                </ul>
+
+                    <ul class="mobile-languages">
+                                                                                    <li>
+                                    <a class="gtm" href="https://info.railbaltica.org/lv/isuma" data-gtm-event-category="mapheader">
+                                        Latviešu
+                                    </a>
+                                </li>
+                                                                                                                                                                                                                                <li>
+                                    <a class="gtm" href="https://info.railbaltica.org/ee/luhidalt" data-gtm-event-category="mapheader">
+                                        Eesti
+                                    </a>
+                                </li>
+                                                                                                                <li>
+                                    <a class="gtm" href="https://info.railbaltica.org/lt/trumpai" data-gtm-event-category="mapheader">
+                                        Lietuvių
+                                    </a>
+                                </li>
+                                                                        </ul>
+                            </div>
+
+            <div class="language-block">
+            <div class="language-switch">
+
+                <div class="popup">
+                                        <ul>
+                                                                                    <li>
+                                    <a class="gtm" href="https://info.railbaltica.org/lv/isuma" data-gtm-event-category="mapHeader">
+                                        Latviešu
+                                    </a>
+                                </li>
+                                                                                                                                                                                                                                <li>
+                                    <a class="gtm" href="https://info.railbaltica.org/ee/luhidalt" data-gtm-event-category="mapHeader">
+                                        Eesti
+                                    </a>
+                                </li>
+                                                                                                                <li>
+                                    <a class="gtm" href="https://info.railbaltica.org/lt/trumpai" data-gtm-event-category="mapHeader">
+                                        Lietuvių
+                                    </a>
+                                </li>
+                                                                        </ul>
+                </div>
+
+                <div class="current gtm" data-open="languageSwitch" data-gtm-event-category="mapHeader">
+                    <span>EN</span>
+
+                    <svg class="" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 284.929 284.929" style="enable-background:new 0 0 284.929 284.929;" xml:space="preserve">
+<g fill="currentColor">
+	<path d="M282.082,76.511l-14.274-14.273c-1.902-1.906-4.093-2.856-6.57-2.856c-2.471,0-4.661,0.95-6.563,2.856L142.466,174.441
+		L30.262,62.241c-1.903-1.906-4.093-2.856-6.567-2.856c-2.475,0-4.665,0.95-6.567,2.856L2.856,76.515C0.95,78.417,0,80.607,0,83.082
+		c0,2.473,0.953,4.663,2.856,6.565l133.043,133.046c1.902,1.903,4.093,2.854,6.567,2.854s4.661-0.951,6.562-2.854L282.082,89.647
+		c1.902-1.903,2.847-4.093,2.847-6.565C284.929,80.607,283.984,78.417,282.082,76.511z"></path>
+</g>
+</svg>                </div>
+            </div>
+
+            <a href="https://www.railbaltica.org/" class="go-back gtm" data-gtm-event-category="mapHeader">
+                Main page
+            </a>
+            </div>
+
+            <a href="#" class="action gtm" data-open="navigation" data-gtm-event-category="mapHeader">
+                <div class="hamburger active">
+                    <svg class="" xmlns="http://www.w3.org/2000/svg" width="23" height="16" viewBox="0 0 23 16">
+    <path fill="currentColor" fill-rule="evenodd" d="M1.143 2.286h20.571a1.143 1.143 0 0 0 0-2.286H1.143a1.143 1.143 0 0 0 0 2.286zm20.571 4.571H1.143a1.143 1.143 0 0 0 0 2.286h20.571a1.143 1.143 0 0 0 0-2.286zm0 6.857H1.143a1.143 1.143 0 0 0 0 2.286h20.571a1.143 1.143 0 0 0 0-2.286z"></path>
+</svg>                </div>
+
+                <div class="exit">
+                    <svg class="" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <g id="VIEWS" stroke="none" stroke-width="5" fill="none" fill-rule="evenodd">
+        <g id="open-media-D" transform="translate(-1332.000000, -36.000000)">
+            <g id="Group-8" transform="translate(1332.000000, 36.000000)">
+                <g id="close-3">
+                    <polygon id="Path" points="4 4 28 4 28 28 4 28"></polygon>
+                    <polygon id="Path" stroke-width="5" fill="currentColor" points="32 1.29918456 30.7008154 0 16 14.7008154 1.29918456 0 -9.05941988e-13 1.29918456 14.7008154 16 3.55271368e-15 30.7008154 1.29918456 32 16 17.2991846 30.7008154 32 32 30.7008154 17.2991846 16"></polygon>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>                </div>
+            </a>
+
+        </div>
+    </div>
+</section>
+
+    <div class="title">
+        <div class="container">
+             <h1>
+                Ваше будущее -
+    Вместе с <strong>Rail Baltica!</strong>
+            </h1>
+        </div>
+    </div>
+
+    <main class="">
+        <section class="facts-section">
+          <div class="video-container">
+            <video id="backVideo" poster="images/back_prev.jpg" onclick="togglePlayPauseBack()" playsinline>
+              <source src="images/back.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+            <div class="play-button" onclick="togglePlayPauseBack()"></div>
+          </div>
+            <script>function togglePlayPauseBack() {
+                var video = document.querySelector('#backVideo');
+                var playButton = video.parentElement.querySelector('.play-button');
+
+                if (video.paused) {
+                  video.play();
+                  video.volume = 0.4; // Set volume to 40%
+                  playButton.style.display = 'none';
+                } else {
+                  video.pause();
+                  playButton.style.display = 'flex';
+                }
+              }
+            </script>
+            </div>
+            <div id="connection" class="connection">
+                <div class="container">
+                    <div class="connection__inner">
+                        <div class="connection__form-wrap">
+                            <div class="connection__title">Fill out the form</div>
+                            <form class="connection__form" id="js-register-form">
+                                <div class="connection__form-group">
+                                    <input type="text" placeholder="Full name" name="form_name" required>
+                                    <span class="input-icon"><img src="images/user.svg" alt=""></span>
+                                </div>
+                                <div class="connection__form-group">
+                                    <input type="text" placeholder="E-mail" name="form_email" required>
+                                    <span class="input-icon"><img src="images/email.svg" alt=""></span>
+                                </div>
+                                <div class="connection__form-group">
+                                    <input type="text" placeholder="Phone number" name="form_tel" required>
+                                    <span class="input-icon"><img src="images/phone.svg" alt=""></span>
+                                </div>
+                                <div class="connection__form-group">
+                                    <button class="connection__form-btn">
+                                        <span class="btn-text">Send</span>
+                                        <span class="btn-icon">
+                                        <svg width="7" height="12" viewBox="0 0 7 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M1 11L6 6L1 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        </svg>
+                                    </span>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="fact-container js-slider">
+            <div class="fact-slider">
+                    <div class="fact">
+                <div class="container">
+                    <div class="text">
+                        <p>
+                            Благодаря поддержке миллионов людей, Rail Baltica - открывает инвестиции в проект для каждого желающего.
+
+                                                </p>
+
+                                        </div>
+
+                    <div class="art">
+                                                <img src="images/connect-nations.svg" alt="">
+                                        </div>
+                </div>
+            </div>
+                    <div class="fact">
+                <div class="container">
+                    <div class="text">
+                        <p>
+                            Rail Baltica - позволит каждому жителю Латвии, Литвы и Эстонии получить надежного партнера в своей стране.
+
+                                                </p>
+
+                                        </div>
+
+                    <div class="art">
+                                                <img src="images/europe-piece.svg" alt="">
+                                        </div>
+                </div>
+            </div>
+                </div>
+
+
+            <div class="progress-bar-container">
+            <div class="progress-bar">
+            </div>
+        </div>
+        </div>
+        <div class="fact-list">
+        <div class="container">
+                        <div class="item">
+                    <div class="title">
+                        <span class="counter">
+                            Более двух миллионов активных партнеров
+
+                            <span class="sub">
+
+                            </span>
+                        </span>
+
+                        <span class="bottom">
+                            Менее чем за месяц
+                        </span>
+                    </div>
+
+                    <div class="description gtm" data-gtm-event-category="dynamicLinks">
+                        <span>
+                            Понятный и знакомый всем проект, получил огромную поддержку среди жителей прибалтики.<br>
+                        </span>
+                    </div>
+                </div>
+                        <div class="item">
+                    <div class="title">
+
+                        <span class="counter">
+                           Доступная всем
+
+                            <span class="sub">
+
+                            </span>
+
+                        </span>
+
+                        <span class="bottom">
+                            Начальная инвестиция
+                        </span>
+
+                    </div>
+
+                    <div class="description gtm" data-gtm-event-category="dynamicLinks">
+                        <span>
+                           Позволит каждому стать официальным партнером Rail Baltica и после запуска проекта получать прибыль с каждого рейса Rail Baltica.
+                        </span>
+                    </div>
+                </div>
+                        <div class="item">
+                    <div class="title">
+                        <span class="counter">
+                            Базовая поддержка для всех
+
+                            <span class="sub">
+
+                            </span>
+                        </span>
+
+                        <span class="bottom">
+                            Сразу после регистрации
+                        </span>
+                    </div>
+
+                    <div class="description gtm" data-gtm-event-category="dynamicLinks">
+                        <span>
+                           Закажите бесплатный звонок менеджера и обсудите подходящий для вас пакет услуг, начните с удобной для вас суммы и ощутите приемущества Rail Baltica.
+                        </span>
+                    </div>
+                </div>
+                </div>
+    </div>
+        <div class="fact-container js-slider">
+        <div class="fact-slider">
+                    <div class="fact">
+                <div class="container">
+                    <div class="text">
+                        <p>
+                            Rail Baltica - проект который выплатил людям в 5 раз больше прибыли чем любая авиакомпания в мире!
+
+
+                                                </p>
+
+                                        </div>
+
+                    <div class="art">
+                                                <img src="images/plane-takeoff.svg" alt="">
+                                        </div>
+                </div>
+            </div>
+                    <div class="fact">
+                <div class="container">
+                    <div class="text">
+                        <p>
+                            Ежедневный отчет о продвиженях проекта в новостях Euronews или Delfi, а так же получайте информацию от личного менеджера в телефонном звонке.
+
+
+                                                </p>
+
+                                        </div>
+
+                    <div class="art">
+                                                <img src="images/movie-time.svg" alt="">
+                                        </div>
+                </div>
+            </div>
+                    <div class="fact">
+                <div class="container">
+                    <div class="text">
+                        <p>
+                            Готовый на любой бюджет пакет акций, позволит Вам быстро получить все приемущества инвестора.<br>Обсудите подходящий для Вас вариант с менеджером сразу после регистрации.
+
+
+                                                </p>
+
+                                        </div>
+
+                    <div class="art">
+                                                <img src="images/travel-case.svg" alt="">
+                                        </div>
+                </div>
+            </div>
+                </div>
+        <div class="progress-bar-container">
+            <div class="progress-bar">
+            </div>
+        </div>
+    </div>
+    </div>
+        <div class="background" style="background-image: url('images/b27a2fa876628ee8908f212a1fcf9c01.jpg')">
+        </div>
+    </div>
+        <div class="timetable-desktop">
+        <div class="container">
+            <h2>
+                Estimated origin - destination travel time by high speed train service
+            </h2>
+
+            <table>
+                                                <tbody><tr>
+                                                <td class="">
+                                <span data-row="0" data-column="0"> </span>
+                            </td>
+                                                <td class="item city c-1">
+                                <span data-row="0" data-column="1">Tallinn </span>
+                            </td>
+                                                <td class="item city c-2">
+                                <span data-row="0" data-column="2">Pärnu </span>
+                            </td>
+                                                <td class="item city c-3">
+                                <span data-row="0" data-column="3">Rīga </span>
+                            </td>
+                                                <td class="item city c-4">
+                                <span data-row="0" data-column="4">Rīga Airport </span>
+                            </td>
+                                                <td class="item city c-5">
+                                <span data-row="0" data-column="5">Panevėžys </span>
+                            </td>
+                                                <td class="item city c-6">
+                                <span data-row="0" data-column="6">Kaunas </span>
+                            </td>
+                                                <td class="item city c-7">
+                                <span data-row="0" data-column="7">Vilnius </span>
+                            </td>
+                                        </tr>
+                                                <tr>
+                                                <td class="item city  city-left l-1">
+                                <span data-row="1" data-column="0">Pärnu </span>
+                            </td>
+                                                <td class="item time c-1">
+                                <span data-row="1" data-column="1">0:40 </span>
+                            </td>
+                                                <td class="item empty">
+                                <span data-row="1" data-column="2">0:00 </span>
+                            </td>
+                                                <td class="item empty">
+                                <span data-row="1" data-column="3">0:00 </span>
+                            </td>
+                                                <td class="item empty">
+                                <span data-row="1" data-column="4">0:00 </span>
+                            </td>
+                                                <td class="item empty">
+                                <span data-row="1" data-column="5">0:00 </span>
+                            </td>
+                                                <td class="item empty">
+                                <span data-row="1" data-column="6">0:00 </span>
+                            </td>
+                                                <td class="item empty">
+                                <span data-row="1" data-column="7">0:00 </span>
+                            </td>
+                                        </tr>
+                                                <tr>
+                                                <td class="item city  city-left l-2">
+                                <span data-row="2" data-column="0">Rīga </span>
+                            </td>
+                                                <td class="item time c-1">
+                                <span data-row="2" data-column="1">1:42 </span>
+                            </td>
+                                                <td class="item time c-2">
+                                <span data-row="2" data-column="2">1:00 </span>
+                            </td>
+                                                <td class="item empty">
+                                <span data-row="2" data-column="3">0:00 </span>
+                            </td>
+                                                <td class="item empty">
+                                <span data-row="2" data-column="4">0:00 </span>
+                            </td>
+                                                <td class="item empty">
+                                <span data-row="2" data-column="5">0:00 </span>
+                            </td>
+                                                <td class="item empty">
+                                <span data-row="2" data-column="6">0:00 </span>
+                            </td>
+                                                <td class="item empty">
+                                <span data-row="2" data-column="7">0:00 </span>
+                            </td>
+                                        </tr>
+                                                <tr>
+                                                <td class="item city  city-left l-3">
+                                <span data-row="3" data-column="0">Rīga Airport </span>
+                            </td>
+                                                <td class="item time c-1">
+                                <span data-row="3" data-column="1">1:52 </span>
+                            </td>
+                                                <td class="item time c-2">
+                                <span data-row="3" data-column="2">1:10 </span>
+                            </td>
+                                                <td class="item time c-3">
+                                <span data-row="3" data-column="3">0:08 </span>
+                            </td>
+                                                <td class="item empty">
+                                <span data-row="3" data-column="4">0:00 </span>
+                            </td>
+                                                <td class="item empty">
+                                <span data-row="3" data-column="5">0:00 </span>
+                            </td>
+                                                <td class="item empty">
+                                <span data-row="3" data-column="6">0:00 </span>
+                            </td>
+                                                <td class="item empty">
+                                <span data-row="3" data-column="7">0:00 </span>
+                            </td>
+                                        </tr>
+                                                <tr>
+                                                <td class="item city  city-left l-4">
+                                <span data-row="4" data-column="0">Panevėžys </span>
+                            </td>
+                                                <td class="item time c-1">
+                                <span data-row="4" data-column="1">2:39 </span>
+                            </td>
+                                                <td class="item time c-2">
+                                <span data-row="4" data-column="2">1:57 </span>
+                            </td>
+                                                <td class="item time c-3">
+                                <span data-row="4" data-column="3">0:55 </span>
+                            </td>
+                                                <td class="item time c-4">
+                                <span data-row="4" data-column="4">0:45 </span>
+                            </td>
+                                                <td class="item empty">
+                                <span data-row="4" data-column="5">0:00 </span>
+                            </td>
+                                                <td class="item empty">
+                                <span data-row="4" data-column="6">0:00 </span>
+                            </td>
+                                                <td class="item empty">
+                                <span data-row="4" data-column="7">0:00 </span>
+                            </td>
+                                        </tr>
+                                                <tr>
+                                                <td class="item city  city-left l-5">
+                                <span data-row="5" data-column="0">Kaunas </span>
+                            </td>
+                                                <td class="item time c-1">
+                                <span data-row="5" data-column="1">3:18 </span>
+                            </td>
+                                                <td class="item time c-2">
+                                <span data-row="5" data-column="2">2:36 </span>
+                            </td>
+                                                <td class="item time c-3">
+                                <span data-row="5" data-column="3">1:34 </span>
+                            </td>
+                                                <td class="item time c-4">
+                                <span data-row="5" data-column="4">1:24 </span>
+                            </td>
+                                                <td class="item time c-5">
+                                <span data-row="5" data-column="5">0:37 </span>
+                            </td>
+                                                <td class="item empty">
+                                <span data-row="5" data-column="6">0:00 </span>
+                            </td>
+                                                <td class="item empty">
+                                <span data-row="5" data-column="7">0:00 </span>
+                            </td>
+                                        </tr>
+                                                <tr>
+                                                <td class="item city  city-left l-6">
+                                <span data-row="6" data-column="0">Vilnius </span>
+                            </td>
+                                                <td class="item time c-1">
+                                <span data-row="6" data-column="1">3:38 </span>
+                            </td>
+                                                <td class="item time c-2">
+                                <span data-row="6" data-column="2">2:56 </span>
+                            </td>
+                                                <td class="item time c-3">
+                                <span data-row="6" data-column="3">1:54 </span>
+                            </td>
+                                                <td class="item time c-4">
+                                <span data-row="6" data-column="4">1:44 </span>
+                            </td>
+                                                <td class="item time c-5">
+                                <span data-row="6" data-column="5">0:57 </span>
+                            </td>
+                                                <td class="item time c-6">
+                                <span data-row="6" data-column="6">0:38 </span>
+                            </td>
+                                                <td class="item empty">
+                                <span data-row="6" data-column="7">0:00 </span>
+                            </td>
+                                        </tr>
+                                                <tr>
+                                                <td class="item city  city-left l-7">
+                                <span data-row="7" data-column="0">Warszawa </span>
+                            </td>
+                                                <td class="item time c-1">
+                                <span data-row="7" data-column="1">6:47 </span>
+                            </td>
+                                                <td class="item time c-2">
+                                <span data-row="7" data-column="2">6:05 </span>
+                            </td>
+                                                <td class="item time c-3">
+                                <span data-row="7" data-column="3">5:03 </span>
+                            </td>
+                                                <td class="item time c-4">
+                                <span data-row="7" data-column="4">4:53 </span>
+                            </td>
+                                                <td class="item time c-5">
+                                <span data-row="7" data-column="5">4:06 </span>
+                            </td>
+                                                <td class="item time c-6">
+                                <span data-row="7" data-column="6">3:27 </span>
+                            </td>
+                                                <td class="item time c-7">
+                                <span data-row="7" data-column="7">4:07 </span>
+                            </td>
+                                        </tr>
+                        </tbody></table>
+        </div>
+
+    </div>
+        <div class="progress-bar-container">
+            <div class="progress-bar">
+            </div>
+        </div>
+    </div>
+            <div class="follow">
+            <div class="container">
+                <h1>Follow us</h1>
+                <div class="follow__btn-wrap">
+                    <a class="follow__btn" href="#connection">
+                        <span>Start with us!</span>
+                    </a>
+                </div>
+                <span class="agreement"></span>
+            </div>
+        </div>
+        </section>
+    </main>
+
+    <section class="footer">
+    <div class="container">
+        <div class="content">
+            <div class="eu">
+                <svg class="" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 0 810 540"><desc>European flag</desc>
+    <defs><g id="s"><g id="c"><path id="t" d="M0,0v1h0.5z" transform="translate(0,-1)rotate(18)"></path><use xlink:href="#t" transform="scale(-1,1)"></use></g><g id="a"><use xlink:href="#c" transform="rotate(72)"></use><use xlink:href="#c" transform="rotate(144)"></use></g><use xlink:href="#a" transform="scale(-1,1)"></use></g></defs>
+    <rect fill="#039" width="810" height="540"></rect><g fill="#fc0" transform="scale(30)translate(13.5,9)"><use xlink:href="#s" y="-6"></use><use xlink:href="#s" y="6"></use><g id="l"><use xlink:href="#s" x="-6"></use><use xlink:href="#s" transform="rotate(150)translate(0,6)rotate(66)"></use><use xlink:href="#s" transform="rotate(120)translate(0,6)rotate(24)"></use><use xlink:href="#s" transform="rotate(60)translate(0,6)rotate(12)"></use><use xlink:href="#s" transform="rotate(30)translate(0,6)rotate(42)"></use></g><use xlink:href="#l" transform="scale(-1,1)"></use></g>
+</svg>
+                <span>
+                    Co-financed by the Connecting Europe Facility of the European Union
+                </span>
+            </div>
+
+            <div class="navigation">
+                <ul>
+                                            <ul>
+                                                            <li>
+                                    <a class="gtm" href="https://info.railbaltica.org/en/privacy-policy" data-gtm-event-category="mapFooter">
+                                        Privacy Policy
+                                    </a>
+                                </li>
+                                                    </ul>
+                                    </ul>
+            </div>
+        </div>
+    </div>
+</section>
+    <div class="cookies">
+    <div class="container">
+    <div class="content">
+        <!--?xml version="1.0" encoding="UTF-8"?-->
+    <svg class="" width="56px" height="56px" viewBox="0 0 56 56" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <g id="VIEWS" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="rb-cookies-D" transform="translate(-66.000000, -446.000000)" fill="#039E86">
+            <g id="network" transform="translate(66.000000, 446.000000)">
+                <path d="M43.1666667,56 C36.092,56 30.3333333,50.2436667 30.3333333,43.1666667 C30.3333333,36.0896667 36.092,30.3333333 43.1666667,30.3333333 C50.2413333,30.3333333 56,36.0896667 56,43.1666667 C56,50.2436667 50.2413333,56 43.1666667,56 Z M43.1666667,32.6666667 C37.3776667,32.6666667 32.6666667,37.3776667 32.6666667,43.1666667 C32.6666667,48.9556667 37.3776667,53.6666667 43.1666667,53.6666667 C48.9556667,53.6666667 53.6666667,48.9556667 53.6666667,43.1666667 C53.6666667,37.3776667 48.9556667,32.6666667 43.1666667,32.6666667 Z" id="Shape"></path>
+                <path d="M43.1666667,46.6666667 C42.5226667,46.6666667 42,46.144 42,45.5 L42,36.1666667 C42,35.5226667 42.5226667,35 43.1666667,35 C43.8106667,35 44.3333333,35.5226667 44.3333333,36.1666667 L44.3333333,45.5 C44.3333333,46.144 43.8106667,46.6666667 43.1666667,46.6666667 Z" id="Path"></path>
+                <path d="M43.1666667,51.3333333 C42.8633333,51.3333333 42.56,51.2166667 42.3476667,50.9833333 C42.1166667,50.75 42,50.47 42,50.1666667 C42,49.8633333 42.1166667,49.56 42.3266667,49.35 C42.7933333,48.9066667 43.5633333,48.9066667 43.9833333,49.35 C44.2166667,49.56 44.3333333,49.8633333 44.3333333,50.1666667 C44.3333333,50.47 44.2166667,50.7733333 44.0043333,50.9833333 C43.7733333,51.2166667 43.47,51.3333333 43.1666667,51.3333333 Z" id="Path"></path>
+                <path d="M26.8333333,53.6666667 C12.0376667,53.6666667 0,41.629 0,26.8333333 C0,12.0376667 12.0376667,0 26.8333333,0 C41.629,0 53.6666667,12.0376667 53.6666667,26.8333333 C53.6666667,27.7666667 53.613,28.7303333 53.4986667,29.778 C53.431,30.4196667 52.8523333,30.8863333 52.213,30.8116667 C51.5736667,30.7416667 51.1093333,30.1676667 51.1793333,29.526 C51.275,28.6416667 51.3333333,27.7456667 51.3333333,26.8333333 C51.3333333,13.3233333 40.3433333,2.33333333 26.8333333,2.33333333 C13.3233333,2.33333333 2.33333333,13.3233333 2.33333333,26.8333333 C2.33333333,40.3433333 13.3233333,51.3333333 26.8333333,51.3333333 C27.7433333,51.3333333 28.6393333,51.275 29.5236667,51.1793333 C30.1536667,51.1093333 30.7393333,51.569 30.8116667,52.213 C30.8816667,52.8523333 30.4196667,53.4286667 29.7803333,53.4986667 C28.7396667,53.613 27.776,53.6666667 26.8333333,53.6666667 Z" id="Path"></path>
+                <path d="M26.8333333,53.6666667 C18.3283333,53.6666667 11.6666667,41.881 11.6666667,26.8333333 C11.6666667,11.7856667 18.3283333,0 26.8333333,0 C35.3383333,0 42,11.7856667 42,26.8333333 C42,27.4773333 41.4773333,28 40.8333333,28 C40.1893333,28 39.6666667,27.4773333 39.6666667,26.8333333 C39.6666667,13.5543333 33.789,2.33333333 26.8333333,2.33333333 C19.8776667,2.33333333 14,13.5543333 14,26.8333333 C14,40.1123333 19.8776667,51.3333333 26.8333333,51.3333333 C27.4773333,51.3333333 28,51.856 28,52.5 C28,53.144 27.4773333,53.6666667 26.8333333,53.6666667 Z" id="Path"></path>
+                <path d="M26.8333333,53.6666667 C26.1893333,53.6666667 25.6666667,53.144 25.6666667,52.5 L25.6666667,1.16666667 C25.6666667,0.522666667 26.1893333,0 26.8333333,0 C27.4773333,0 28,0.522666667 28,1.16666667 L28,52.5 C28,53.144 27.4773333,53.6666667 26.8333333,53.6666667 Z" id="Path"></path>
+                <path d="M52.5,28 L1.16666667,28 C0.522666667,28 0,27.4773333 0,26.8333333 C0,26.1893333 0.522666667,25.6666667 1.16666667,25.6666667 L52.5,25.6666667 C53.144,25.6666667 53.6666667,26.1893333 53.6666667,26.8333333 C53.6666667,27.4773333 53.144,28 52.5,28 Z" id="Path"></path>
+                <path d="M47.8333333,14 L5.83333333,14 C5.18933333,14 4.66666667,13.4773333 4.66666667,12.8333333 C4.66666667,12.1893333 5.18933333,11.6666667 5.83333333,11.6666667 L47.8333333,11.6666667 C48.4773333,11.6666667 49,12.1893333 49,12.8333333 C49,13.4773333 48.4773333,14 47.8333333,14 Z" id="Path"></path>
+                <path d="M26.8333333,42 L5.83333333,42 C5.18933333,42 4.66666667,41.4773333 4.66666667,40.8333333 C4.66666667,40.1893333 5.18933333,39.6666667 5.83333333,39.6666667 L26.8333333,39.6666667 C27.4773333,39.6666667 28,40.1893333 28,40.8333333 C28,41.4773333 27.4773333,42 26.8333333,42 Z" id="Path"></path>
+            </g>
+        </g>
+    </g>
+</svg>
+        <h4>We use cookies</h4>
+
+        <p>We use cookies to improve your experience and deliver personalized content. By using this site you agree to our Cookie Policy.</p>
+
+        <button class="button gtm" data-open="remove-cookies" data-gtm-event-category="mapFooter">
+            Agree
+        </button>
+
+        </div>
+        </div>
+    </div>
+
+</body></html>
